@@ -5,7 +5,7 @@ import { tryCatch } from '../utils/tryCatch.js';
 const authRouter = express.Router();
 
 
-  /**
+ /**
  * @swagger
  * /api/v1/users/register:
  *   post:
@@ -30,19 +30,53 @@ const authRouter = express.Router();
  *       201:
  *         description: User registered successfully.
  *       400:
- *         description: Bad request. Something wromg with the input
+ *         description: Bad request.
+ *       200:
+ *         description: user already exists
  */
-
 authRouter.post('/api/v1/users/register', tryCatch(register));
 
 /**
  * @swagger
- * /api/v1/login:
- *   get:
- *     summary: Returns a greeting message
+ * /api/v1/users/login:
+ *   post:
+ *     summary: Login to the application
+ *     description: Endpoint to authenticate and login a user.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Successful response
+ *         description: User logged in successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                       description: The ID of the logged-in user.
+ *                     name:
+ *                       type: string
+ *                       description: The name of the logged-in user.
+ *       401:
+ *         description: Unauthorized. Invalid email or password.
+ *       400:
+ *         description: Bad request. Malformed request body.
  */
 
 authRouter.post('/api/v1/users/login', tryCatch(login));
