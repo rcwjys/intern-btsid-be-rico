@@ -7,7 +7,7 @@ const authRouter = express.Router();
 
   /**
  * @swagger
- * /api/v1/register:
+ * /api/v1/users/register:
  *   post:
  *     summary: Register a new user
  *     description: Endpoint to register a new user.
@@ -33,7 +33,7 @@ const authRouter = express.Router();
  *         description: Bad request. Something wromg with the input
  */
 
-authRouter.post('/api/v1/register', tryCatch(register));
+authRouter.post('/api/v1/users/register', tryCatch(register));
 
 /**
  * @swagger
@@ -45,7 +45,7 @@ authRouter.post('/api/v1/register', tryCatch(register));
  *         description: Successful response
  */
 
-authRouter.post('/api/v1/login', login);
+authRouter.post('/api/v1/users/login', tryCatch(login));
 
 
 
