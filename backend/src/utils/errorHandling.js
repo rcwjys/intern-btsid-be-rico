@@ -25,6 +25,7 @@ export const errorHandling = (err, req, res, next) => {
       }
     });
   } else {
+    console.log(err);
     return res.status(500).json({
       success: false,
       error: {

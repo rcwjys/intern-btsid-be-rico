@@ -1,5 +1,5 @@
 import express from 'express';
-import { login, register } from '../controller/authController.js';
+import { login, logout, register } from '../controller/authController.js';
 import { tryCatch } from '../utils/tryCatch.js';
 
 const authRouter = express.Router();
@@ -80,6 +80,9 @@ authRouter.post('/api/v1/users/register', tryCatch(register));
  */
 
 authRouter.post('/api/v1/users/login', tryCatch(login));
+
+
+authRouter.post('/api/v1/users/logout', tryCatch(logout));
 
 
 
