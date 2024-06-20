@@ -4,6 +4,7 @@ import swaggerOptions from './src/swagger/swaggerOptions.js';
 
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import { authRouter } from './src/routes/auth.js';
 import { errorHandling } from './src/utils/errorHandling.js';
 import { boaordRouter } from './src/routes/board.js';
@@ -12,7 +13,7 @@ dotenv.config();
 
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
