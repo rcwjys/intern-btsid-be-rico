@@ -22,6 +22,16 @@ export async function createBoard(req, res) {
     throw new ValidationError('Board is already exists', 200);
   }
 
+  const isAuthorExists = await prisma.user.findUnique({
+    where: {
+      user_id: boardData.authorId
+    }
+  });
+
+  if (!isAuthorExists) {
+    throw new ValidationError('author is not exists', 400);
+  }
+
   const createdBoard = await prisma.board.create({
     data: {
       board_title: boardData.boardTitle,

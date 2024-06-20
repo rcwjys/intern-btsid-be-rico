@@ -25,7 +25,7 @@ export async function register(req, res) {
   });
 
   if (user) {
-    throw new ValidationError('Email is used, please use another email', 200);
+    throw new ValidationError('Email is used, please use another email', 400);
   }
 
   const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -77,7 +77,7 @@ export async function login(req, res) {
 }
 
 export async function logout(req, res) {
-  
+
 }
 
 

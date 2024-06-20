@@ -1,15 +1,15 @@
 import express from 'express';
 import { tryCatch } from '../utils/tryCatch.js';
-import { createBoard } from '../controller/boardController.js';
+import { createList } from '../controller/listController.js';
 
-const boardRouter = express.Router();
+const listRouter = express.Router();
 
 /**
  * @swagger
- * /api/v1/boards:
+ * /api/v1/lists:
  *   post:
- *     summary: Create a new board
- *     description: Endpoint to create a new board.
+ *     summary: Create a new list
+ *     description: Endpoint to create a new list for a specific board.
  *     requestBody:
  *       required: true
  *       content:
@@ -17,16 +17,19 @@ const boardRouter = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               boardTitle:
+ *               listTitle:
  *                 type: string
  *                 minLength: 1
- *                 example: My Board
+ *                 example: To-Do
+ *               boardId:
+ *                 type: string
+ *                 example: uuid
  *               authorId:
  *                 type: string
  *                 example: uuid
  *     responses:
  *       200:
- *         description: Board created successfully.
+ *         description: List created successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -38,20 +41,17 @@ const boardRouter = express.Router();
  *                 data:
  *                   type: object
  *                   properties:
- *                     boardId:
- *                       type: integer
- *                       description: The ID of the created board.
- *                     boardTitle:
+ *                     listTitle:
  *                       type: string
- *                       description: The title of the created board.
+ *                       description: The title of the created list.
  *                     createdAt:
  *                       type: string
  *                       format: date-time
- *                       description: The timestamp when the board was created.
+ *                       description: The timestamp when the list was created.
  *       400:
  *         description: Bad request.
  */
-boardRouter.post('/api/v1/boards', tryCatch(createBoard));
+listRouter.post('/api/v1/lists', tryCatch(createList));
 
 
-export { boardRouter };
+export {listRouter};

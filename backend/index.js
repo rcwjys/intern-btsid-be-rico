@@ -7,7 +7,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { authRouter } from './src/routes/auth.js';
 import { errorHandling } from './src/utils/errorHandling.js';
-import { boaordRouter } from './src/routes/board.js';
+import { boardRouter } from './src/routes/board.js';
+import { listRouter } from './src/routes/list.js';
 
 dotenv.config();
 
@@ -22,7 +23,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(authRouter);
 
-app.use(boaordRouter);
+app.use(boardRouter);
+
+app.use(listRouter);
 
 app.use(errorHandling);
 
