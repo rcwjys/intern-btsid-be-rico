@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { UnAuthorize, ValidationError } from '../utils/error.js';
 import { prisma } from '../utils/prismaClient.js';
 import bcrypt from 'bcrypt';
+import { genereateAccessToken } from '../utils/tokenGenerator.js';
 
 export async function register(req, res) {
 
@@ -67,11 +68,17 @@ export async function login(req, res) {
     throw new UnAuthorize('email or username wrong', 401);
   }
 
+  const accessToken = await genereateAccessToken({
+    userId: user.user_id,
+    name: user.user_name,
+  });
+
   res.status(200).json({
     success: true, 
     data: {
       userId: user.user_id,
-      name: user.user_name
+      name: user.user_name,
+      accessToken
     }
   });
 }

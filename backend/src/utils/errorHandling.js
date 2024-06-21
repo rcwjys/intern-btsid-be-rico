@@ -1,6 +1,7 @@
 import { ZodError } from 'zod';
 import { UnAuthorize, ValidationError } from '../utils/error.js';
 import { fromError } from 'zod-validation-error';
+import jwt from 'jsonwebtoken';
 
 export const errorHandling = (err, req, res, next) => {
   if (err instanceof ZodError) {
@@ -19,6 +20,13 @@ export const errorHandling = (err, req, res, next) => {
     });
   } else if (err instanceof UnAuthorize) {
     return res.status(err.statusCode || 401).json({
+      success: false,
+      error: {
+        message: err.message
+      }
+    });
+  } else if(err instanceof jwt.JsonWebTokenError) {
+    return res.status(401).json({
       success: false,
       error: {
         message: err.message

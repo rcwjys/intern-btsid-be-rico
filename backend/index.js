@@ -10,6 +10,8 @@ import { errorHandling } from './src/utils/errorHandling.js';
 import { boardRouter } from './src/routes/board.js';
 import { listRouter } from './src/routes/list.js';
 import { taskRouter } from './src/routes/task.js';
+import { authenticateMiddleware } from './src/middleware/authenticate.js';
+import { tryCatch } from './src/utils/tryCatch.js';
 
 dotenv.config();
 
@@ -23,6 +25,8 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(authRouter);
+
+app.use(tryCatch(authenticateMiddleware));
 
 app.use(boardRouter);
 

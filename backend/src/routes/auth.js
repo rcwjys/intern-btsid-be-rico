@@ -58,7 +58,7 @@ authRouter.post('/api/v1/users/register', tryCatch(register));
  * /api/v1/login:
  *   post:
  *     summary: User login
- *     description: Authenticate user credentials (email and password) and generate a session token.
+ *     description: Authenticate user with email and password, returning user ID, name, and access token.
  *     requestBody:
  *       required: true
  *       content:
@@ -73,7 +73,7 @@ authRouter.post('/api/v1/users/register', tryCatch(register));
  *                 type: string
  *     responses:
  *       '200':
- *         description: Successfully authenticated user
+ *         description: User successfully logged in
  *         content:
  *           application/json:
  *             schema:
@@ -87,25 +87,16 @@ authRouter.post('/api/v1/users/register', tryCatch(register));
  *                   properties:
  *                     userId:
  *                       type: string
+ *                       example: "f9448035-2e75-42b6-851b-7a3016835c5e"
  *                     name:
  *                       type: string
- *       '401':
- *         description: Unauthorized due to incorrect credentials
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: object
- *                   properties:
- *                     message:
+ *                       example: "rico wijaya"
+ *                     accessToken:
  *                       type: string
- *                       example: Email or password is incorrect
+ *                       example: <token>
  */
+
+
 authRouter.post('/api/v1/users/login', tryCatch(login));
 
 
