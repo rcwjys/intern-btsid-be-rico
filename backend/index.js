@@ -9,6 +9,7 @@ import { authRouter } from './src/routes/auth.js';
 import { errorHandling } from './src/utils/errorHandling.js';
 import { boardRouter } from './src/routes/board.js';
 import { listRouter } from './src/routes/list.js';
+import { taskRouter } from './src/routes/task.js';
 
 dotenv.config();
 
@@ -26,6 +27,8 @@ app.use(authRouter);
 app.use(boardRouter);
 
 app.use(listRouter);
+
+app.use(taskRouter);
 
 app.use(errorHandling);
 
