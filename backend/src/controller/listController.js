@@ -5,7 +5,7 @@ import { ValidationError } from "../utils/error.js";
 
 export async function createList(req, res) {
   const listSchema = z.object({
-    listTitle: z.string().min(1, 'please naming your list'),
+    listTitle: z.string().min(1, 'list name cannot be blank'),
     boardId: z.string(),
     authorId: z.string()
   });

@@ -3,13 +3,12 @@ import { tryCatch } from '../utils/tryCatch.js';
 import { createBoard } from '../controller/boardController.js';
 
 const boardRouter = express.Router();
-
 /**
  * @swagger
  * /api/v1/boards:
  *   post:
  *     summary: Create a new board
- *     description: Endpoint to create a new board.
+ *     description: Create a new board with a title and author ID.
  *     requestBody:
  *       required: true
  *       content:
@@ -20,13 +19,13 @@ const boardRouter = express.Router();
  *               boardTitle:
  *                 type: string
  *                 minLength: 1
- *                 example: My Board
+ *                 example: Project X Board
  *               authorId:
  *                 type: string
  *                 example: uuid
  *     responses:
- *       200:
- *         description: Board created successfully.
+ *       '200':
+ *         description: Board created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -39,18 +38,33 @@ const boardRouter = express.Router();
  *                   type: object
  *                   properties:
  *                     boardId:
- *                       type: integer
- *                       description: The ID of the created board.
+ *                       type: string
  *                     boardTitle:
  *                       type: string
- *                       description: The title of the created board.
  *                     createdAt:
  *                       type: string
  *                       format: date-time
- *                       description: The timestamp when the board was created.
- *       400:
- *         description: Bad request.
+ *       '400':
+ *         description: Bad request due to validation error or resource not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: "Validation error: Board title cannot be blank"
  */
+
+
+
+
 boardRouter.post('/api/v1/boards', tryCatch(createBoard));
 
 

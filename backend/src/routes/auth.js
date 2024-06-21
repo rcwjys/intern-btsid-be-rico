@@ -5,12 +5,12 @@ import { tryCatch } from '../utils/tryCatch.js';
 const authRouter = express.Router();
 
 
- /**
+/**
  * @swagger
- * /api/v1/users/register:
+ * /api/v1/register:
  *   post:
- *     summary: Register a new user
- *     description: Endpoint to register a new user.
+ *     summary: User registration
+ *     description: Register a new user with email, name, password, and password confirmation.
  *     requestBody:
  *       required: true
  *       content:
@@ -20,28 +20,45 @@ const authRouter = express.Router();
  *             properties:
  *               email:
  *                 type: string
- *               name: 
+ *                 format: email
+ *               name:
  *                 type: string
- *               password: 
+ *                 minLength: 3
+ *               password:
  *                 type: string
+ *                 minLength: 4
  *               passwordConfirmation:
  *                 type: string
  *     responses:
- *       201:
- *         description: User registered successfully.
- *       400:
- *         description: Bad request.
- *       200:
- *         description: user already exists
+ *       '201':
+ *         description: User successfully registered
+ *       '400':
+ *         description: Bad request due to validation error or existing user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: Email is used, please use another email
  */
+
+
 authRouter.post('/api/v1/users/register', tryCatch(register));
 
 /**
  * @swagger
- * /api/v1/users/login:
+ * /api/v1/login:
  *   post:
- *     summary: Login to the application
- *     description: Endpoint to authenticate and login a user.
+ *     summary: User login
+ *     description: Authenticate user credentials (email and password) and generate a session token.
  *     requestBody:
  *       required: true
  *       content:
@@ -51,11 +68,12 @@ authRouter.post('/api/v1/users/register', tryCatch(register));
  *             properties:
  *               email:
  *                 type: string
+ *                 format: email
  *               password:
  *                 type: string
  *     responses:
- *       200:
- *         description: User logged in successfully.
+ *       '200':
+ *         description: Successfully authenticated user
  *         content:
  *           application/json:
  *             schema:
@@ -68,17 +86,26 @@ authRouter.post('/api/v1/users/register', tryCatch(register));
  *                   type: object
  *                   properties:
  *                     userId:
- *                       type: integer
- *                       description: The ID of the logged-in user.
+ *                       type: string
  *                     name:
  *                       type: string
- *                       description: The name of the logged-in user.
- *       401:
- *         description: Unauthorized. Invalid email or password.
- *       400:
- *         description: Bad request. Malformed request body.
+ *       '401':
+ *         description: Unauthorized due to incorrect credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: Email or password is incorrect
  */
-
 authRouter.post('/api/v1/users/login', tryCatch(login));
 
 

@@ -6,7 +6,7 @@ import { ValidationError } from "../utils/error.js";
 export async function createBoard(req, res) {
 
   const boardSchema = z.object({
-    boardTitle: z.string().min(1, 'please naming your board'),
+    boardTitle: z.string().min(1, 'Board title cannot be blank'),
     authorId: z.string()
   });
 
