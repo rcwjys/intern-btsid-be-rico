@@ -3,6 +3,7 @@ import { UnAuthorize, ValidationError } from '../utils/error.js';
 import { prisma } from '../utils/prismaClient.js';
 import bcrypt from 'bcrypt';
 import { genereateAccessToken } from '../utils/tokenGenerator.js';
+import { verifyToken } from '../utils/verifyToken.js';
 
 export async function register(req, res) {
 
@@ -84,7 +85,25 @@ export async function login(req, res) {
 }
 
 export async function logout(req, res) {
+  const header = req.headers.authorization;
+  
+  if (!header) throw new UnAuthorize('token is not exist', 401);
+  
+  const token = header.split(' ')[1];
+  
+  if (!token) throw new UnAuthorize('token is not exist', 401);
 
+  try {
+    await verifyToken(token);
+    res.status(200).json({
+      success: true, 
+      data: {
+        message: 'logout succesfuly'
+      }
+    });
+  } catch (err) {
+    throw err;
+  }
 }
 
 

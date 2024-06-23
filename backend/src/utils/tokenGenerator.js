@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 export async function genereateAccessToken(payload) {
   return new Promise((resolve, rejected) => {
-    jwt.sign(payload, process.env.TOKEN_SECRET, {expiresIn: '1s'}, (err, accessToken) => {
+    jwt.sign(payload, process.env.TOKEN_SECRET, {expiresIn: '5h'}, (err, accessToken) => {
       if (err) rejected(err);
       resolve(accessToken);
     });
