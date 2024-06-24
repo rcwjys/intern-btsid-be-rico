@@ -27,7 +27,6 @@ model Board {
   author      User     @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
   author_id   String
   lists       List[]
-  tasks       Task[]
 }
 
 model List {
@@ -51,6 +50,4 @@ model Task {
   author_id  String
   lists      List     @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
   list_id    String
-  board      Board    @relation(fields: [board_id], references: [board_id])
-  board_id   String
 }

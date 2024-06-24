@@ -65,6 +65,8 @@ export async function getBoardData(req, res) {
       author_id: isValidUserId.user_id
     },
     select: {
+      board_id: true,
+      board_title: true,
       lists: {
         select: {
           list_id: true,
@@ -75,7 +77,9 @@ export async function getBoardData(req, res) {
           tasks: {
             select: {
               task_id: true,
-              task_title: true
+              task_title: true,
+              createdAt: true,
+              updatedAt: true
             }
           }
         }

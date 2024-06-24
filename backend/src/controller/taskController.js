@@ -5,8 +5,7 @@ import { NotFound, ValidationError } from "../utils/error.js";
 export async function createTask(req, res) {
   const taskSchema = z.object({
     taskTitle: z.string().min(1, 'task cannot be blank'),
-    listId: z.string(),
-    boardId: z.string().min(1)
+    listId: z.string().min(1)
   });
 
   const taskData = await taskSchema.parseAsync(req.body);
@@ -32,14 +31,6 @@ export async function createTask(req, res) {
     throw new ValidationError('list is not exists',400);
   }
 
-  const isBoardExist = await prisma.board.findUnique({
-    where: {
-      board_id: taskData.boardId
-    }
-  });
-
-  if (!isBoardExist) throw new ValidationError('board is not exists', 400);
-
   const isAuthorExists = await prisma.user.findUnique({
     where: {
       user_id: req.userPayload.userId
@@ -56,7 +47,6 @@ export async function createTask(req, res) {
       task_title: taskData.taskTitle,
       list_id: taskData.listId,
       author_id: req.userPayload.userId,
-      board_id: taskData.boardId
     }
   });
 
