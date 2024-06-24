@@ -6,20 +6,12 @@ const boardRouter = express.Router();
 
 /**
  * @swagger
- * /board-data:
+ * /api/v1/boards:
  *   get:
  *     summary: Retrieve board data for a user
  *     description: Fetches boards created by a specific user based on userId provided in the request body.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               userId:
- *                 type: string
- *                 example: f9448035-2e75-42b6-851b-7a3016835c5e
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       '200':
  *         description: Successful response
@@ -78,7 +70,13 @@ const boardRouter = express.Router();
  *                     message:
  *                       type: string
  *                       example: board is not found
+ * securitySchemes:
+ *   BearerAuth:
+ *     type: http
+ *     scheme: bearer
+ *     bearerFormat: JWT
  */
+
 
 boardRouter.get("/api/v1/boards", tryCatch(getBoardData));
 

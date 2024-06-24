@@ -49,16 +49,9 @@ export async function createBoard(req, res) {
 }
 
 export async function getBoardData(req, res) {
-
-  const boardDataSchema = z.object({
-    userId: z.string().min(1, 'userId is required')
-  });
-
-  const userData = await boardDataSchema.parseAsync(req.body);
-
   const isValidUserId = await prisma.user.findUnique({
     where: {
-      user_id: userData.userId
+      user_id: req.userPayload.userId
     }
   });
 
