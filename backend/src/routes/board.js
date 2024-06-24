@@ -77,9 +77,7 @@ const boardRouter = express.Router();
  *     bearerFormat: JWT
  */
 
-
 boardRouter.get("/api/v1/boards", tryCatch(getBoardData));
-
 /**
  * @swagger
  * /api/v1/boards:

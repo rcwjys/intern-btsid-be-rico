@@ -6,15 +6,14 @@ export async function createTask(req, res) {
   const taskSchema = z.object({
     taskTitle: z.string().min(1, 'task cannot be blank'),
     listId: z.string(),
-    authorId: z.string()
   });
 
   const taskData = await taskSchema.parseAsync(req.body);
 
-
-  const isTaskExists = prisma.task.findUnique({
+  const isTaskExists = await prisma.task.findFirst({
     where: {
-      task_title: taskData.taskTitle
+      task_title: taskData.taskTitle,
+      author_id: req.userPayload.userId
     }
   });
 
@@ -34,7 +33,7 @@ export async function createTask(req, res) {
 
   const isAuthorExists = await prisma.user.findUnique({
     where: {
-      user_id: taskData.authorId
+      user_id: req.userPayload.userId
     }
   });
 
@@ -42,12 +41,11 @@ export async function createTask(req, res) {
     throw new ValidationError('author is not exists', 400);
   }
 
-
   const createdTask = await prisma.task.create({
     data: {
       task_title: taskData.taskTitle,
       list_id: taskData.listId,
-      author_id: taskData.authorId
+      author_id: req.userPayload.userId
     }
   });
 

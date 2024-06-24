@@ -7,14 +7,14 @@ export async function createList(req, res) {
   const listSchema = z.object({
     listTitle: z.string().min(1, 'list name cannot be blank'),
     boardId: z.string(),
-    authorId: z.string()
   });
 
   const listData = await listSchema.parseAsync(req.body);
 
-  const list = await prisma.list.findUnique({
+  const list = await prisma.list.findFirst({
     where: {
-      list_title: listData.listTitle
+      list_title: listData.listTitle,
+      author_id: req.userPayload.userId
     }
   });
 
@@ -34,7 +34,7 @@ export async function createList(req, res) {
 
   const isUserExists = await prisma.user.findUnique({
     where: {
-      user_id: listData.authorId
+      user_id: req.userPayload.userId
     }
   });
 
@@ -46,7 +46,7 @@ export async function createList(req, res) {
     data: {
       list_title: listData.listTitle,
       board_id: listData.boardId,
-      author_id: listData.authorId
+      author_id: isUserExists.user_id
     }
   });
 
@@ -54,7 +54,7 @@ export async function createList(req, res) {
     success: true,
     data: {
       listTitle: createdList.list_title,
-      createdAt: createList.createdAt
+      createdAt: createdList.createdAt
     }
   });
 

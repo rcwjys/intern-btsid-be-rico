@@ -11,16 +11,17 @@ export async function createBoard(req, res) {
 
   const boardData = await boardSchema.parseAsync(req.body);
 
-  const isBoardExist = await prisma.board.findUnique({
+  const isBoardExist = await prisma.board.findFirst({
     where: {
-      board_title: boardData.boardTitle
+      board_title: boardData.boardTitle,
+      author_id: req.userPayload.userId
     }
   });
 
   if (isBoardExist) {
     throw new ValidationError('Board is already exists', 200);
   }
- 
+
   const isAuthorExists = await prisma.user.findUnique({
     where: {
       user_id: req.userPayload.userId
@@ -49,9 +50,16 @@ export async function createBoard(req, res) {
 }
 
 export async function getBoardData(req, res) {
+
+  const boardDataSchema = z.object({
+    userId: z.string().min(1, 'userId is required')
+  });
+
+  const userData = await boardDataSchema.parseAsync(req.body);
+
   const isValidUserId = await prisma.user.findUnique({
     where: {
-      user_id: req.userPayload.userId
+      user_id: userData.userId
     }
   });
 

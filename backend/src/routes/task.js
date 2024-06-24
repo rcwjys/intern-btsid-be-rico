@@ -23,8 +23,6 @@ const taskRouter = express.Router();
  *                 minLength: 1
  *               listId:
  *                 type: string
- *               authorId:
- *                 type: string
  *     responses:
  *       '200':
  *         description: Successfully created a new task

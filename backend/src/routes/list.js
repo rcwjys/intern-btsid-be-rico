@@ -1,6 +1,6 @@
-import express from 'express';
-import { tryCatch } from '../utils/tryCatch.js';
-import { createList } from '../controller/listController.js';
+import express from "express";
+import { tryCatch } from "../utils/tryCatch.js";
+import { createList } from "../controller/listController.js";
 
 const listRouter = express.Router();
 
@@ -22,9 +22,6 @@ const listRouter = express.Router();
  *                 minLength: 1
  *                 example: To-Do
  *               boardId:
- *                 type: string
- *                 example: uuid
- *               authorId:
  *                 type: string
  *                 example: uuid
  *     responses:
@@ -65,7 +62,6 @@ const listRouter = express.Router();
  *                       type: string
  *                       example: "Validation error: list name cannot be blank"
  */
-listRouter.post('/api/v1/lists', tryCatch(createList));
+listRouter.post("/api/v1/lists", tryCatch(createList));
 
-
-export {listRouter};
+export { listRouter };

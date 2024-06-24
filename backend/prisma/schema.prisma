@@ -21,7 +21,7 @@ model User {
 
 model Board {
   board_id    String   @id @default(uuid())
-  board_title String   @unique
+  board_title String  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   author      User     @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
@@ -31,7 +31,7 @@ model Board {
 
 model List {
   list_id    String   @id @default(uuid())
-  list_title String   @unique
+  list_title String   
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   author     User     @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
@@ -43,7 +43,7 @@ model List {
 
 model Task {
   task_id    String   @id @default(uuid())
-  task_title String   @unique
+  task_title String   
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   author     User     @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
