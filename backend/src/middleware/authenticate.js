@@ -15,7 +15,8 @@ export async function authenticateMiddleware(req, res, next) {
   }
 
   try {
-    await verifyToken(token);
+    const decodedData = await verifyToken(token);
+    req.userPayload = decodedData;
     next();
   } catch (err) {
     next(err);

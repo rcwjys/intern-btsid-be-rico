@@ -7,7 +7,6 @@ export async function createBoard(req, res) {
 
   const boardSchema = z.object({
     boardTitle: z.string().min(1, 'Board title cannot be blank'),
-    authorId: z.string()
   });
 
   const boardData = await boardSchema.parseAsync(req.body);
@@ -21,10 +20,10 @@ export async function createBoard(req, res) {
   if (isBoardExist) {
     throw new ValidationError('Board is already exists', 200);
   }
-
+ 
   const isAuthorExists = await prisma.user.findUnique({
     where: {
-      user_id: boardData.authorId
+      user_id: req.userPayload.userId
     }
   });
 
@@ -35,7 +34,7 @@ export async function createBoard(req, res) {
   const createdBoard = await prisma.board.create({
     data: {
       board_title: boardData.boardTitle,
-      author_id: boardData.authorId
+      author_id: req.userPayload.userId
     }
   });
 
