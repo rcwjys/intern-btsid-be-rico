@@ -14,40 +14,43 @@ model User {
   user_password String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  Board         Board[]
-  List          List[]
-  Task          Task[]
+  boards        Board[]
+  lists         List[]
+  tasks         Task[]
 }
 
 model Board {
   board_id    String   @id @default(uuid())
-  board_title String  
+  board_title String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   author      User     @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
   author_id   String
-  List        List[]
+  lists       List[]
+  tasks       Task[]
 }
 
 model List {
   list_id    String   @id @default(uuid())
-  list_title String   
+  list_title String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   author     User     @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
   author_id  String
   boards     Board    @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
   board_id   String
-  Task       Task[]
+  tasks      Task[]
 }
 
 model Task {
   task_id    String   @id @default(uuid())
-  task_title String   
+  task_title String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   author     User     @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
   author_id  String
   lists      List     @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
   list_id    String
+  board      Board    @relation(fields: [board_id], references: [board_id])
+  board_id   String
 }

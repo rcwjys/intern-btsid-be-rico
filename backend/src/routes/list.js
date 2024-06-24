@@ -4,6 +4,7 @@ import { createList } from "../controller/listController.js";
 
 const listRouter = express.Router();
 
+
 /**
  * @swagger
  * /api/v1/lists:

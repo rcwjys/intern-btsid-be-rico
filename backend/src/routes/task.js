@@ -3,8 +3,6 @@ import { tryCatch } from '../utils/tryCatch.js';
 import { createTask } from '../controller/taskController.js';
 
 const taskRouter = express.Router();
-
-
 /**
  * @swagger
  * /api/v1/tasks:
@@ -59,13 +57,6 @@ const taskRouter = express.Router();
  *                       type: string
  *                       example: "Validation error: Task title cannot be blank"
  */
-
-
-
-
-
-
-
 taskRouter.post('/api/v1/tasks', tryCatch(createTask));
 
 
