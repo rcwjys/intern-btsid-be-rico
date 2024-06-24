@@ -15,7 +15,7 @@ export async function register(req, res) {
   });
 
   const userData = await RegistrationSchema.parseAsync(req.body);
-  
+
   if (req.body.password !== req.body.passwordConfirmation) {
     throw new ValidationError('Password and Password Confirmation Must Same', 400);
   }
@@ -75,7 +75,7 @@ export async function login(req, res) {
   });
 
   res.status(200).json({
-    success: true, 
+    success: true,
     data: {
       userId: user.user_id,
       name: user.user_name,
@@ -86,17 +86,17 @@ export async function login(req, res) {
 
 export async function logout(req, res) {
   const header = req.headers.authorization;
-  
+
   if (!header) throw new UnAuthorize('token is not exist', 401);
-  
+
   const token = header.split(' ')[1];
-  
+
   if (!token) throw new UnAuthorize('token is not exist', 401);
 
   try {
     await verifyToken(token);
     res.status(200).json({
-      success: true, 
+      success: true,
       data: {
         message: 'logout succesfuly'
       }

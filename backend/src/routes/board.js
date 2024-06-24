@@ -1,8 +1,11 @@
 import express from 'express';
 import { tryCatch } from '../utils/tryCatch.js';
-import { createBoard } from '../controller/boardController.js';
+import { createBoard, getBoardData } from '../controller/boardController.js';
 
 const boardRouter = express.Router();
+
+boardRouter.get('/api/v1/boards', tryCatch(getBoardData));
+
 /**
  * @swagger
  * /api/v1/boards:
@@ -61,11 +64,10 @@ const boardRouter = express.Router();
  *                       type: string
  *                       example: "Validation error: Board title cannot be blank"
  */
-
-
-
-
 boardRouter.post('/api/v1/boards', tryCatch(createBoard));
+
+
+
 
 
 export { boardRouter };
