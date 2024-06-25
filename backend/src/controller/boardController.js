@@ -87,10 +87,28 @@ export async function getBoardData(req, res) {
     }
   });
 
+  const formattedBoards = boards.map(board => ({
+    boardId: board.board_id,
+    boardTitle: board.board_title,
+    lists: board.lists.map(list => ({
+      listId: list.list_id,
+      listTitle: list.list_title,
+      createdAt: list.created_at, 
+      updatedAt: list.updated_at,
+      tasks: list.tasks.map(task => ({
+        taskId: task.task_id,
+        taskTitle: task.task_title,
+        createdAt: task.created_at,
+        updatedAt: task.updated_at
+      }))
+    }))
+  }));
+
+
   res.status(200).json({
     success: true,
     data: {
-      boards
+      formattedBoards
     }
   });
 }
