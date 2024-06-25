@@ -31,10 +31,10 @@ const boardRouter = express.Router();
  *                       items:
  *                         type: object
  *                         properties:
- *                           board_id:
+ *                           boardId:
  *                             type: string
  *                             example: c4c9a5d7-42b0-47f0-8b99-9d9a3ee91b69
- *                           board_title:
+ *                           boardTitle:
  *                             type: string
  *                             example: my first board
  *                           lists:
@@ -42,10 +42,10 @@ const boardRouter = express.Router();
  *                             items:
  *                               type: object
  *                               properties:
- *                                 list_id:
+ *                                 listId:
  *                                   type: string
  *                                   example: 0a463c71-15f3-4647-a7b8-794438b6345f
- *                                 list_title:
+ *                                 listTitle:
  *                                   type: string
  *                                   example: todo
  *                                 createdAt:
@@ -61,10 +61,10 @@ const boardRouter = express.Router();
  *                                   items:
  *                                     type: object
  *                                     properties:
- *                                       task_id:
+ *                                       taskId:
  *                                         type: string
  *                                         example: 55ff014c-3086-4c7d-afa5-65983436b5c1
- *                                       task_title:
+ *                                       taskTitle:
  *                                         type: string
  *                                         example: nyapu
  *                                       createdAt:
@@ -79,24 +79,24 @@ const boardRouter = express.Router();
  *             success: true
  *             data:
  *               boards:
- *                 - board_id: "c4c9a5d7-42b0-47f0-8b99-9d9a3ee91b69"
- *                   board_title: "my first board"
+ *                 - boardId: "c4c9a5d7-42b0-47f0-8b99-9d9a3ee91b69"
+ *                   boardTitle: "my first board"
  *                   lists:
- *                     - list_id: "0a463c71-15f3-4647-a7b8-794438b6345f"
- *                       list_title: "todo"
+ *                     - listId: "0a463c71-15f3-4647-a7b8-794438b6345f"
+ *                       listTitle: "todo"
  *                       createdAt: "2024-06-24T08:12:09.757Z"
  *                       updatedAt: "2024-06-24T08:12:09.757Z"
  *                       tasks:
- *                         - task_id: "55ff014c-3086-4c7d-afa5-65983436b5c1"
- *                           task_title: "nyapu"
+ *                         - taskId: "55ff014c-3086-4c7d-afa5-65983436b5c1"
+ *                           taskTitle: "nyapu"
  *                           createdAt: "2024-06-24T11:04:05.175Z"
  *                           updatedAt: "2024-06-24T11:04:05.175Z"
- *                         - task_id: "6b695561-6e49-4382-a1b7-271913a0d109"
- *                           task_title: "makan"
+ *                         - taskId: "6b695561-6e49-4382-a1b7-271913a0d109"
+ *                           taskTitle: "makan"
  *                           createdAt: "2024-06-24T08:29:03.238Z"
  *                           updatedAt: "2024-06-24T08:29:03.238Z"
- *                         - task_id: "df909913-b902-4cfc-a349-c9b9b8e95b99"
- *                           task_title: "mandi"
+ *                         - taskId: "df909913-b902-4cfc-a349-c9b9b8e95b99"
+ *                           taskTitle: "mandi"
  *                           createdAt: "2024-06-24T08:28:58.067Z"
  *                           updatedAt: "2024-06-24T08:28:58.067Z"
  */
