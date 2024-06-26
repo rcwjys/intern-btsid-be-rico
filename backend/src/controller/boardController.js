@@ -96,7 +96,6 @@ export async function getBoardData(req, res) {
     }
   });
 
-  
   const formattedBoards = boards.map(board => ({
     boardId: board.board_id,
     boardTitle: board.board_title,
@@ -113,8 +112,6 @@ export async function getBoardData(req, res) {
       }))
     }))
   }));
-
-  console.log(formattedBoards);
 
   res.status(200).json({
     success: true,

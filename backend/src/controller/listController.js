@@ -14,7 +14,8 @@ export async function createList(req, res) {
   const list = await prisma.list.findFirst({
     where: {
       list_title: listData.listTitle,
-      author_id: req.userPayload.userId
+      author_id: req.userPayload.userId,
+      board_id: listData.boardId
     }
   });
 
