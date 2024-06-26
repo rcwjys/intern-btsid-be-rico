@@ -20,7 +20,7 @@ export async function createList(req, res) {
   });
 
   if (list) {
-    throw new ValidationError('list is already exists', 200);
+    throw new ValidationError('list is already exists', 400);
   }
 
   const isBoardExist = await prisma.board.findUnique({
