@@ -54,6 +54,7 @@ export async function createList(req, res) {
   res.status(200).json({
     success: true,
     data: {
+      listId: createdList.list_id,
       listTitle: createdList.list_title,
       createdAt: createdList.createdAt
     }
