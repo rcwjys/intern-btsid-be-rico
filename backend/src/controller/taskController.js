@@ -10,16 +10,7 @@ export async function createTask(req, res) {
 
   const taskData = await taskSchema.parseAsync(req.body);
 
-  const isTaskExists = await prisma.task.findFirst({
-    where: {
-      task_title: taskData.taskTitle,
-      author_id: req.userPayload.userId
-    }
-  });
 
-  if (isTaskExists) {
-    throw new ValidationError('task is already exists', 400);
-  }
 
   const isListExists = await prisma.list.findUnique({
     where: {
