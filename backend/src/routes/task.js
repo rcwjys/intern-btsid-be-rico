@@ -1,6 +1,6 @@
 import express from 'express';
 import { tryCatch } from '../utils/tryCatch.js';
-import { createTask } from '../controller/taskController.js';
+import { createTask, updateTask } from '../controller/taskController.js';
 
 const taskRouter = express.Router();
 /**
@@ -59,6 +59,61 @@ const taskRouter = express.Router();
  */
 taskRouter.post('/api/v1/tasks', tryCatch(createTask));
 
+/**
+ * @swagger
+ * /api/v1/tasks:
+ *   patch:
+ *     summary: Update a Task
+ *     description: Update the list ID of an existing task using task ID and list ID.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               taskId:
+ *                 type: string
+ *                 minLength: 1
+ *               listId:
+ *                 type: string
+ *                 minLength: 1
+ *     responses:
+ *       '200':
+ *         description: Successfully updated the task
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     taskTitle:
+ *                       type: string
+ *       '400':
+ *         description: Bad request due to validation error or resource not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: "Validation error: Task ID cannot be blank"
+ */
+
+taskRouter.patch('/api/v1/tasks', tryCatch(updateTask));
+
 
 export { taskRouter };
-
+""

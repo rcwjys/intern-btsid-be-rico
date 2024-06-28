@@ -10,8 +10,6 @@ export async function createTask(req, res) {
 
   const taskData = await taskSchema.parseAsync(req.body);
 
-
-
   const isListExists = await prisma.list.findUnique({
     where: {
       list_id: taskData.listId
@@ -49,3 +47,47 @@ export async function createTask(req, res) {
     }
   });
 }
+
+export async function updateTask(req, res) {
+  const updateTaskSchema = z.object({
+    taskId: z.string().min(1),
+    listId: z.string().min(1)
+  });
+
+  const updateSchemaRequest = await updateTaskSchema.parseAsync(req.body);
+
+  const task = await prisma.task.findUnique({
+    where: {
+      task_id: updateSchemaRequest.taskId,
+    }
+  });
+
+  const list = await prisma.list.findUnique({
+    where: {
+      list_id: updateSchemaRequest.listId
+    }
+  });
+
+  if (!task ) {
+    throw new ValidationError('task is not found', 400);
+  }
+
+  if (!list) {
+    throw new ValidationError('list is not found', 400)
+  }
+
+  const updatedTask = await prisma.task.update({
+    where: {
+      task_id: updateSchemaRequest.taskId
+    },
+    data: {
+      list_id: updateSchemaRequest.listId
+    }
+  });
+  res.status(200).json({
+    success: true,
+    data: {
+      taskTitle: updatedTask.task_title
+    }
+  });
+} 
