@@ -63,5 +63,7 @@ export async function createList(req, res) {
 
 
 export async function getListData(req, res) {
-  
+  const params = req.param.slug;
+  console.log();
+  res.send('ok');
 }

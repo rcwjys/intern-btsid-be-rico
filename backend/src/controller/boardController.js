@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { prisma } from "../utils/prismaClient.js";
 import { NotFound, ValidationError } from "../utils/error.js";
+import { slugFormatter } from "../utils/slugFormatter.js";
 
 
 export async function createBoard(req, res) {
@@ -35,7 +36,8 @@ export async function createBoard(req, res) {
   const createdBoard = await prisma.board.create({
     data: {
       board_title: boardData.boardTitle,
-      author_id: req.userPayload.userId
+      author_id: req.userPayload.userId,
+      board_slug: slugFormatter(boardData.boardTitle)
     }
   });
 
@@ -44,6 +46,7 @@ export async function createBoard(req, res) {
     data: {
       boardId: createdBoard.board_id,
       boardTitle: createdBoard.board_title,
+      boardSlug: createdBoard.board_slug,
       createdAt: createdBoard.created_at
     }
   });
@@ -70,12 +73,14 @@ export async function getBoardData(req, res) {
     select: {
       board_id: true,
       board_title: true,
+      board_slug: true,
     }
   });
 
   const formattedBoards = boards.map(board => ({
     boardId: board.board_id,
     boardTitle: board.board_title,
+    boardSlug: board.board_slug
   }));
 
   res.status(200).json({
