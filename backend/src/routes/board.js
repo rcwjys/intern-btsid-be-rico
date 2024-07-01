@@ -37,68 +37,14 @@ const boardRouter = express.Router();
  *                           boardTitle:
  *                             type: string
  *                             example: my first board
- *                           lists:
- *                             type: array
- *                             items:
- *                               type: object
- *                               properties:
- *                                 listId:
- *                                   type: string
- *                                   example: 0a463c71-15f3-4647-a7b8-794438b6345f
- *                                 listTitle:
- *                                   type: string
- *                                   example: todo
- *                                 createdAt:
- *                                   type: string
- *                                   format: date-time
- *                                   example: "2024-06-24T08:12:09.757Z"
- *                                 updatedAt:
- *                                   type: string
- *                                   format: date-time
- *                                   example: "2024-06-24T08:12:09.757Z"
- *                                 tasks:
- *                                   type: array
- *                                   items:
- *                                     type: object
- *                                     properties:
- *                                       taskId:
- *                                         type: string
- *                                         example: 55ff014c-3086-4c7d-afa5-65983436b5c1
- *                                       taskTitle:
- *                                         type: string
- *                                         example: nyapu
- *                                       createdAt:
- *                                         type: string
- *                                         format: date-time
- *                                         example: "2024-06-24T11:04:05.175Z"
- *                                       updatedAt:
- *                                         type: string
- *                                         format: date-time
- *                                         example: "2024-06-24T11:04:05.175Z"
+ *                          
  *           example:
  *             success: true
  *             data:
  *               boards:
  *                 - boardId: "c4c9a5d7-42b0-47f0-8b99-9d9a3ee91b69"
  *                   boardTitle: "my first board"
- *                   lists:
- *                     - listId: "0a463c71-15f3-4647-a7b8-794438b6345f"
- *                       listTitle: "todo"
- *                       createdAt: "2024-06-24T08:12:09.757Z"
- *                       updatedAt: "2024-06-24T08:12:09.757Z"
- *                       tasks:
- *                         - taskId: "55ff014c-3086-4c7d-afa5-65983436b5c1"
- *                           taskTitle: "nyapu"
- *                           createdAt: "2024-06-24T11:04:05.175Z"
- *                           updatedAt: "2024-06-24T11:04:05.175Z"
- *                         - taskId: "6b695561-6e49-4382-a1b7-271913a0d109"
- *                           taskTitle: "makan"
- *                           createdAt: "2024-06-24T08:29:03.238Z"
- *                           updatedAt: "2024-06-24T08:29:03.238Z"
- *                         - taskId: "df909913-b902-4cfc-a349-c9b9b8e95b99"
- *                           taskTitle: "mandi"
- *                           createdAt: "2024-06-24T08:28:58.067Z"
- *                           updatedAt: "2024-06-24T08:28:58.067Z"
+ *                   
  */
 
 
