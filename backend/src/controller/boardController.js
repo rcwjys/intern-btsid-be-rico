@@ -69,52 +69,12 @@ export async function getBoardData(req, res) {
     },
     select: {
       board_id: true,
-      board_title: true,
-      lists: {
-        orderBy: {
-          createdAt: 'asc'
-        },
-        select: {
-          list_id: true,
-          list_title: true, 
-          createdAt: true,
-          updatedAt: true,
-
-          tasks: {
-            orderBy: {
-              createdAt: 'asc'
-            },
-            select: {
-              task_id: true,
-              task_title: true,
-              createdAt: true,
-              updatedAt: true
-            }
-          }
-        }
-      }
+      board_title: true
     }
   });
 
-  const formattedBoards = boards.map(board => ({
-    boardId: board.board_id,
-    boardTitle: board.board_title,
-    lists: board.lists.map(list => ({
-      listId: list.list_id,
-      listTitle: list.list_title,
-      createdAt: list.createdAt, 
-      updatedAt: list.updatedAt,
-      tasks: list.tasks.map(task => ({
-        taskId: task.task_id,
-        taskTitle: task.task_title,
-        createdAt: task.createdAt,
-        updatedAt: task.updatedAt
-      }))
-    }))
-  }));
-
   res.status(200).json({
     success: true,
-    data: formattedBoards
+    data: boards
   });
 }

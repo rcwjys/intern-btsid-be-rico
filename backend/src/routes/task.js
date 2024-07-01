@@ -84,7 +84,7 @@ taskRouter.post('/api/v1/tasks', tryCatch(createTask));
  *         content:
  *           application/json:
  *             schema:
- *               type: object
+ *               type: object   
  *               properties:
  *                 success:
  *                   type: boolean
@@ -116,4 +116,4 @@ taskRouter.patch('/api/v1/tasks', tryCatch(updateTask));
 
 
 export { taskRouter };
-""
+
