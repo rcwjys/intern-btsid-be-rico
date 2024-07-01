@@ -1,6 +1,6 @@
 import express from "express";
 import { tryCatch } from "../utils/tryCatch.js";
-import { createList } from "../controller/listController.js";
+import { createList, getListData } from "../controller/listController.js";
 
 const listRouter = express.Router();
 
@@ -64,5 +64,9 @@ const listRouter = express.Router();
  *                       example: "Validation error: list name cannot be blank"
  */
 listRouter.post("/api/v1/lists", tryCatch(createList));
+
+
+
+listRouter.get("/api/v1/lists/:slug", tryCatch(getListData));
 
 export { listRouter };

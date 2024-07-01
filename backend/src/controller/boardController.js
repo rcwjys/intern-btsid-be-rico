@@ -69,12 +69,17 @@ export async function getBoardData(req, res) {
     },
     select: {
       board_id: true,
-      board_title: true
+      board_title: true,
     }
   });
 
+  const formattedBoards = boards.map(board => ({
+    boardId: board.board_id,
+    boardTitle: board.board_title,
+  }));
+
   res.status(200).json({
     success: true,
-    data: boards
+    data: formattedBoards
   });
 }

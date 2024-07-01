@@ -59,5 +59,9 @@ export async function createList(req, res) {
       createdAt: createdList.createdAt
     }
   });
+}
 
+
+export async function getListData(req, res) {
+  
 }
