@@ -22,7 +22,7 @@ model User {
 model Board {
   board_id    String   @id @default(uuid())
   board_title String
-  board_slug  String
+  board_slug  String   @unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   author      User     @relation(fields: [author_id], references: [user_id], onDelete: Cascade)

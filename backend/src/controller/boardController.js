@@ -77,7 +77,7 @@ export async function getBoardData(req, res) {
     }
   });
 
-  const formattedBoards = boards.map(board => ({
+  const formattedBoardsResponse = boards.map(board => ({
     boardId: board.board_id,
     boardTitle: board.board_title,
     boardSlug: board.board_slug
@@ -85,6 +85,6 @@ export async function getBoardData(req, res) {
 
   res.status(200).json({
     success: true,
-    data: formattedBoards
+    data: formattedBoardsResponse
   });
 }

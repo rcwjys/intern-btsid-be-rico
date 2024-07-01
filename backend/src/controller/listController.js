@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { prisma } from "../utils/prismaClient.js";
-import { ValidationError } from "../utils/error.js";
+import { NotFound, ValidationError } from "../utils/error.js";
 
 
 export async function createList(req, res) {
@@ -63,7 +63,49 @@ export async function createList(req, res) {
 
 
 export async function getListData(req, res) {
-  const params = req.param.slug;
-  console.log();
-  res.send('ok');
+  const slug = req.params.slug;
+
+  const board = await prisma.board.findUnique({
+    where: {
+      board_slug: slug
+    }
+  });
+
+  if (!board) {
+    throw new ValidationError('board is not found', 400);
+  }
+
+  const lists = await prisma.list.findMany({
+    where: {
+      board_id: board.board_id
+    },
+    select: {
+      list_id: true,
+      list_title: true,
+      tasks: {
+        select: {
+          task_id: true,
+          task_title: true
+        }
+      }
+    }
+  });
+
+  const formattedListResponse = lists.map(list => {
+    return {
+      listId: list.list_id,
+      listTitle: list.list_title,
+      tasks: list.tasks.map(task => {
+        return  {
+          taskId: task.task_id,
+          taskTitle: task.task_title,
+        }
+      })
+    }
+  });
+
+  res.status(200).json({
+    success: true,
+    data: formattedListResponse
+  })
 }
