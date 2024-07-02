@@ -1,6 +1,6 @@
 import express from "express";
 import { tryCatch } from "../utils/tryCatch.js";
-import { createBoard, getBoardData } from "../controller/boardController.js";
+import { createBoard, getBoardData, getSharingBoard, shareBoard } from "../controller/boardController.js";
 
 const boardRouter = express.Router();
 
@@ -105,5 +105,10 @@ boardRouter.get("/api/v1/boards", tryCatch(getBoardData));
  *                       example: "Validation error: Board title cannot be blank"
  */
 boardRouter.post("/api/v1/boards", tryCatch(createBoard));
+
+boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
+
+boardRouter.post("/api/v1/boards/:slug/shares", tryCatch(shareBoard));
+
 
 export { boardRouter };

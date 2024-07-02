@@ -8,26 +8,29 @@ datasource db {
 }
 
 model User {
-  user_id       String   @id @default(uuid())
-  user_email    String   @unique
+  user_id       String    @id @default(uuid())
+  user_email    String    @unique
   user_name     String
   user_password String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   boards        Board[]
   lists         List[]
   tasks         Task[]
+  share         Sharing[]
 }
 
 model Board {
-  board_id    String   @id @default(uuid())
+  board_id    String    @id @default(uuid())
   board_title String
-  board_slug  String   @unique
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  author      User     @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
+  is_sharing  Boolean   @default(false)
+  board_slug  String    @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  author      User      @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
   author_id   String
   lists       List[]
+  share       Sharing[]
 }
 
 model List {
@@ -51,4 +54,13 @@ model Task {
   author_id  String
   lists      List     @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
   list_id    String
+}
+
+model Sharing {
+  share_id        String @id @default(uuid())
+  author_id       String
+  collaborator    User   @relation(fields: [collaborator_id], references: [user_id], onDelete: Cascade)
+  collaborator_id String
+  board           Board  @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
+  board_id        String
 }

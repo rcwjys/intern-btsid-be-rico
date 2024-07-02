@@ -65,7 +65,8 @@ export async function getBoardData(req, res) {
 
   const boards = await prisma.board.findMany({
     where: {
-      author_id: isValidUserId.user_id
+      author_id: isValidUserId.user_id,
+      is_sharing: false
     },
     orderBy: {
       createdAt: 'asc'
@@ -88,3 +89,124 @@ export async function getBoardData(req, res) {
     data: formattedBoardsResponse
   });
 }
+
+export async function shareBoard(req, res) {
+  
+  const slug = req.params.slug;
+
+  const shareSchema = z.object({
+    collaboratorEmail: z.string().min(1)
+  });
+
+  const request = await shareSchema.parseAsync(req.body);
+
+  const collaboratorWithExactEmail = await prisma.user.findUnique({
+    where: {
+      user_email: request.collaboratorEmail
+    }
+  });
+
+  if (!collaboratorWithExactEmail) throw new ValidationError('user is not found', 400);
+
+  const boardWIllShared = await prisma.board.findUnique({
+    where: {
+      board_slug: slug
+    }
+  });
+
+  if (!boardWIllShared) {
+    throw new ValidationError('board is not found', 400);
+  }
+
+  if (collaboratorWithExactEmail.user_id === boardWIllShared.author_id) throw new ValidationError('board is cannot share with your account', 400);
+
+  const isDoubleShared = await prisma.sharing.count({
+    where: {
+      collaborator_id: collaboratorWithExactEmail.user_id,
+      board_id: boardWIllShared.board_id
+    }
+  });
+
+  if (isDoubleShared) {
+    throw new ValidationError('board is shared already shared');
+  }
+
+  await prisma.sharing.create({
+    data: {
+      author_id: req.userPayload.userId,
+      board_id: boardWIllShared.board_id,
+      collaborator_id: collaboratorWithExactEmail.user_id
+    }
+  });
+
+  await prisma.board.update({
+    where: {
+      board_slug: boardWIllShared.board_slug
+    },
+    data: {
+      is_sharing: true
+    }
+  });
+
+  res.sendStatus(201);
+}
+
+export async function getSharingBoard(req, res) {
+
+  const share = await prisma.sharing.findMany({
+    where: {
+      OR: [
+        { author_id: req.userPayload.userId }, 
+        { collaborator_id: req.userPayload.userId }, 
+      ],
+    },
+    include: {
+      board: {
+        select: {
+          board_id: true,
+          board_title: true,
+          board_slug: true,
+          author: {
+            select: {
+              user_id: true,
+              user_name: true,
+            },
+          },
+        },
+      },
+      collaborator: {
+        select: {
+          user_id: true,
+          user_name: true,
+        },
+      },
+    },
+  });
+
+
+  const mergeBoards = (data) => {
+    return data.reduce((acc, current) => {
+      const existingBoard = acc.find(item => item.board.board_id === current.board.board_id);
+
+      if (existingBoard) {
+        existingBoard.collaborators.push(current.collaborator);
+      } else {
+        acc.push({
+          board: current.board,
+          author: current.board.author,
+          collaborators: [current.collaborator],
+        });
+      }
+
+      return acc;
+    }, []);
+  };
+
+  res.status(200).json({
+    success: true,
+    data: mergeBoards(share)
+  })
+}
+
+
+
