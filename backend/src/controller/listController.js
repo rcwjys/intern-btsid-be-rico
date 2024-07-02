@@ -89,6 +89,9 @@ export async function getListData(req, res) {
         select: {
           task_id: true,
           task_title: true
+        }, 
+        orderBy: {
+          createdAt: 'asc'
         }
       }
     }
