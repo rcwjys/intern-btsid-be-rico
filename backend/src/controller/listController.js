@@ -6,7 +6,7 @@ import { NotFound, ValidationError } from "../utils/error.js";
 export async function createList(req, res) {
   const listSchema = z.object({
     listTitle: z.string().min(1, 'list name cannot be blank'),
-    boardId: z.string(),
+    boardId: z.string().min(1),
   });
 
   const listData = await listSchema.parseAsync(req.body);
@@ -78,6 +78,9 @@ export async function getListData(req, res) {
   const lists = await prisma.list.findMany({
     where: {
       board_id: board.board_id
+    },
+    orderBy: {
+      createdAt: 'asc'
     },
     select: {
       list_id: true,
