@@ -11,6 +11,7 @@ const listRouter = express.Router();
  *   get:
  *     summary: Get specific lists and tasks related to a board
  *     description: Retrieve specific lists and tasks related to a board using the slug parameter.
+ *     tags: [List]
  *     parameters:
  *       - in: path
  *         name: slug
@@ -75,6 +76,7 @@ listRouter.get("/api/v1/lists/:slug", tryCatch(getListData));
  *   post:
  *     summary: Create a new list
  *     description: Endpoint to create a new list for a specific board.
+ *     tags: [List]
  *     requestBody:
  *       required: true
  *       content:

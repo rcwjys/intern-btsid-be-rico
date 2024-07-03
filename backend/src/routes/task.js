@@ -9,6 +9,7 @@ const taskRouter = express.Router();
  *   post:
  *     summary: Create a new task
  *     description: Create a new task with task title, list ID, and author ID.
+ *     tags: [Task]
  *     requestBody:
  *       required: true
  *       content:
@@ -65,6 +66,7 @@ taskRouter.post('/api/v1/tasks', tryCatch(createTask));
  *   patch:
  *     summary: Update a Task
  *     description: Update the list ID of an existing task using task ID and list ID.
+ *     tags: [Task]
  *     requestBody:
  *       required: true
  *       content:

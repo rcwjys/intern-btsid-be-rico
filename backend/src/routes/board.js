@@ -5,11 +5,14 @@ import { createBoard, getBoardData, getSharingBoard, shareBoard } from "../contr
 const boardRouter = express.Router();
 
 /**
+ * 
+ * 
  * @swagger
  * /api/v1/boards:
  *   get:
  *     summary: Retrieve board data for a user
  *     description: Fetches boards created by a specific user based on userId provided in the request body.
+ *     tags: [Boards]
  *     security:
  *       - BearerAuth: []
  *     responses:
@@ -55,6 +58,7 @@ boardRouter.get("/api/v1/boards", tryCatch(getBoardData));
  *   post:
  *     summary: Create a new board
  *     description: Create a new board with a title and author ID.
+ *     tags: [Boards]
  *     requestBody:
  *       required: true
  *       content:
@@ -112,6 +116,7 @@ boardRouter.post("/api/v1/boards", tryCatch(createBoard));
  *   get:
  *     summary: Get sharing boards
  *     description: Retrieve boards shared with or created by the current user, including board details, author information, and collaborators.
+ *     tags: [Boards]
  *     responses:
  *       '200':
  *         description: Sharing boards retrieved successfully
@@ -201,6 +206,7 @@ boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
  *   post:
  *     summary: Share a board with a collaborator
  *     description: Share a specific board identified by its slug with a collaborator by their email.
+ *     tags: [Boards]
  *     parameters:
  *       - in: path
  *         name: slug

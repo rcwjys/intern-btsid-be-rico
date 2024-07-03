@@ -11,6 +11,7 @@ const authRouter = express.Router();
  *   post:
  *     summary: User registration
  *     description: Register a new user with email, name, password, and password confirmation.
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -59,6 +60,7 @@ authRouter.post('/api/v1/users/register', tryCatch(register));
  *   post:
  *     summary: User login
  *     description: Authenticate user with email and password, returning user ID, name, and access token.
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -105,6 +107,7 @@ authRouter.post('/api/v1/users/login', tryCatch(login));
  *   post:
  *     summary: User logout
  *     description: Logs out the user by verifying and invalidating the access token.
+ *     tags: [Auth]
  *     responses:
  *       '200':
  *         description: User successfully logged out
