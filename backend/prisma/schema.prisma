@@ -8,23 +8,24 @@ datasource db {
 }
 
 model User {
-  user_id       String    @id @default(uuid())
-  user_email    String    @unique
+  user_id       String          @id @default(uuid())
+  user_email    String          @unique
   user_name     String
   user_password String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
   boards        Board[]
   lists         List[]
   tasks         Task[]
   share         Sharing[]
+  reset         ResetPassword[]
 }
 
 model Board {
   board_id    String    @id @default(uuid())
   board_title String
   is_sharing  Boolean   @default(false)
-  board_slug  String    @unique
+  board_slug  String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   author      User      @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
@@ -63,4 +64,14 @@ model Sharing {
   collaborator_id String
   board           Board  @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
   board_id        String
+}
+
+model ResetPassword {
+  id          String   @id
+  token_reste String
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  isUse       Boolean  @default(false)
+  user        User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
+  user_id     String
 }
