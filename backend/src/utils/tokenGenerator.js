@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from "crypto";
 
 
 export async function genereateAccessToken(payload) {
@@ -20,4 +21,6 @@ export async function genereateRefreshToken(payload) {
 };
 
 
-
+export async function generateResetToken() {
+  return crypto.randomBytes(64).toString('hex');
+}

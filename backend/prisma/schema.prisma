@@ -67,9 +67,9 @@ model Sharing {
 }
 
 model ResetPassword {
-  id          String   @id
-  token_reste String
-  expiresAt   DateTime
+  id          String   @id @default(uuid())
+  token_reset String
+  expiresAt   BigInt
   createdAt   DateTime @default(now())
   isUse       Boolean  @default(false)
   user        User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)

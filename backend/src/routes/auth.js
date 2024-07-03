@@ -1,5 +1,5 @@
 import express from 'express';
-import { login, logout, register } from '../controller/authController.js';
+import { forgotPassword, login, logout, register, validateForgotPassword } from '../controller/authController.js';
 import { tryCatch } from '../utils/tryCatch.js';
 
 const authRouter = express.Router();
@@ -143,6 +143,10 @@ authRouter.post('/api/v1/users/login', tryCatch(login));
  *                       example: token is not exist
  */ 
 authRouter.post('/api/v1/users/logout', tryCatch(logout));
+
+authRouter.post('/api/v1/users/forgot-password', tryCatch(forgotPassword));
+
+authRouter.post('/api/v1/users/reset-password/:token', tryCatch(validateForgotPassword));
 
 
 
