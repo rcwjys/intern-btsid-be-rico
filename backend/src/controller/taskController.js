@@ -42,6 +42,7 @@ export async function createTask(req, res) {
   res.status(200).json({
     success: true,
     data: {
+      taskId: createdTask.task_id,
       taskTitle: createdTask.task_title,
       createdAt: createdTask.createdAt
     }
