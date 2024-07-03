@@ -65,11 +65,16 @@ export async function createList(req, res) {
 export async function getListData(req, res) {
   const slug = req.params.slug;
 
-  const board = await prisma.board.findUnique({
+  const board = await prisma.board.findFirst({
     where: {
-      board_slug: slug
+      board_slug: slug,
+      AND: {
+        author_id: req.userPayload.userId
+      }
     }
   });
+
+  console.log(board);
 
   if (!board) {
     throw new ValidationError('board is not found', 400);
@@ -77,7 +82,10 @@ export async function getListData(req, res) {
 
   const lists = await prisma.list.findMany({
     where: {
-      board_id: board.board_id
+      board_id: board.board_id,
+      AND: {
+        author_id: req.userPayload.userId
+      }
     },
     orderBy: {
       createdAt: 'asc'
