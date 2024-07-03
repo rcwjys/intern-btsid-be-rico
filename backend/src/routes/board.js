@@ -106,7 +106,155 @@ boardRouter.get("/api/v1/boards", tryCatch(getBoardData));
  */
 boardRouter.post("/api/v1/boards", tryCatch(createBoard));
 
+/**
+ * @swagger
+ * /api/v1/boards/shares: 
+ *   get:
+ *     summary: Get sharing boards
+ *     description: Retrieve boards shared with or created by the current user, including board details, author information, and collaborators.
+ *     responses:
+ *       '200':
+ *         description: Sharing boards retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       board:
+ *                         type: object
+ *                         properties:
+ *                           board_id:
+ *                             type: string
+ *                             example: "7eac5459-cf19-41c3-a620-5dd134c285f2"
+ *                           board_title:
+ *                             type: string
+ *                             example: "my first board"
+ *                           board_slug:
+ *                             type: string
+ *                             example: "my-first-board"
+ *                           author:
+ *                             type: object
+ *                             properties:
+ *                               user_id:
+ *                                 type: string
+ *                                 example: "da8edf79-2343-4c94-817d-62916cb5f757"
+ *                               user_name:
+ *                                 type: string
+ *                                 example: "user"
+ *                       collaborators:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             user_id:
+ *                               type: string
+ *                               example: "b0da6cf3-3497-489f-a2d2-05d0a3d965d6"
+ *                             user_name:
+ *                               type: string
+ *                               example: "rico"
+ *       '400':
+ *         description: Bad request due to validation error or resource not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: "Validation error: Invalid request parameters"
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: "Internal server error"
+ */
+
 boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
+/**
+ * @swagger
+ * /api/v1/boards/{slug}/shares:
+ *   post:
+ *     summary: Share a board with a collaborator
+ *     description: Share a specific board identified by its slug with a collaborator by their email.
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         description: The slug of the board to be shared
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               collaboratorEmail:
+ *                 type: string
+ *                 minLength: 1
+ *                 example: collaborator@example.com
+ *     responses:
+ *       '201':
+ *         description: Board shared successfully
+ *       '400':
+ *         description: Bad request due to validation error or resource not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: "Validation error: user is not found"
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: "Internal server error"
+ */
 
 boardRouter.post("/api/v1/boards/:slug/shares", tryCatch(shareBoard));
 

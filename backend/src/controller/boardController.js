@@ -183,17 +183,17 @@ export async function getSharingBoard(req, res) {
     },
   });
 
-
   const mergeBoards = (data) => {
     return data.reduce((acc, current) => {
       const existingBoard = acc.find(item => item.board.board_id === current.board.board_id);
 
       if (existingBoard) {
-        existingBoard.collaborators.push(current.collaborator);
+        if (!existingBoard.collaborators.some(collab => collab.user_id === current.collaborator.user_id)) {
+          existingBoard.collaborators.push(current.collaborator);
+        }
       } else {
         acc.push({
           board: current.board,
-          author: current.board.author,
           collaborators: [current.collaborator],
         });
       }
