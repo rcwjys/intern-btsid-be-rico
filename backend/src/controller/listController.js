@@ -68,9 +68,7 @@ export async function getListData(req, res) {
   const board = await prisma.board.findFirst({
     where: {
       board_slug: slug,
-      AND: {
-        author_id: req.userPayload.userId
-      }
+      author_id: req.userPayload.userId
     }
   });
 
@@ -83,9 +81,7 @@ export async function getListData(req, res) {
   const lists = await prisma.list.findMany({
     where: {
       board_id: board.board_id,
-      AND: {
-        author_id: req.userPayload.userId
-      }
+      author_id: req.userPayload.userId
     },
     orderBy: {
       createdAt: 'asc'

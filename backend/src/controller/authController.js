@@ -184,9 +184,7 @@ export async function validateForgotPassword(req, res) {
   const isTransactionWithExactToken = await prisma.resetPassword.findFirst({
     where: {
       token_reset: token,
-      AND: {
         isUse: false
-      }
     }
   });
 
@@ -206,9 +204,7 @@ export async function validateForgotPassword(req, res) {
   await prisma.resetPassword.update({
     where: {
       id: isTransactionWithExactToken.id,
-      AND: {
-        isUse: false
-      }
+      isUse: false
     }, 
     data: {
       isUse: true
