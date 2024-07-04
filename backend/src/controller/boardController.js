@@ -155,7 +155,6 @@ export async function shareBoard(req, res) {
 }
 
 export async function getSharingBoard(req, res) {
-
   const share = await prisma.sharing.findMany({
     where: {
       OR: [
@@ -205,8 +204,27 @@ export async function getSharingBoard(req, res) {
     }, []);
   };
 
+  // Function to convert keys to camelCase recursively
+  const convertToCamelCase = (obj) => {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+
+    return Object.keys(obj).reduce((camelCaseObj, key) => {
+      const camelCaseKey = key.replace(/_([a-z])/g, (match, group) => group.toUpperCase());
+      camelCaseObj[camelCaseKey] = convertToCamelCase(obj[key]);
+      return camelCaseObj;
+    }, {});
+  };
+
+  // Convert response data to camelCase
+  const camelCaseResponse = mergeBoards(share).map(entry => ({
+    board: convertToCamelCase(entry.board),
+    collaborators: entry.collaborators.map(collab => convertToCamelCase(collab)),
+  }));
+
   res.status(200).json({
     success: true,
-    data: mergeBoards(share)
-  })
+    data: camelCaseResponse,
+  });
 }
