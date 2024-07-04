@@ -145,6 +145,63 @@ authRouter.post('/api/v1/users/login', tryCatch(login));
 authRouter.post('/api/v1/users/logout', tryCatch(logout));
 /**
  * @swagger
+ * /api/v1/users/forgot-password:
+ *   post:
+ *     summary: Request password reset
+ *     description: Sends a password reset email to the user.
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userEmail:
+ *                 type: string
+ *                 example: user@example.com
+ *     responses:
+ *       '204':
+ *         description: Password reset email sent successfully
+ *       '401':
+ *         description: Unauthorized request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: user is not exists
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: something went wrong while send the email
+ */
+
+
+authRouter.post('/api/v1/users/forgot-password', tryCatch(forgotPassword));
+
+/**
+ * @swagger
  * /api/v1/users/reset-password/{token}:
  *   post:
  *     summary: Validate password reset
@@ -209,5 +266,8 @@ authRouter.post('/api/v1/users/logout', tryCatch(logout));
 
 
 authRouter.post('/api/v1/users/reset-password/:token', tryCatch(validateForgotPassword));
+
+
+
 
 export {authRouter};

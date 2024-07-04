@@ -204,7 +204,6 @@ export async function getSharingBoard(req, res) {
     }, []);
   };
 
-  // Function to convert keys to camelCase recursively
   const convertToCamelCase = (obj) => {
     if (obj === null || typeof obj !== 'object') {
       return obj;
@@ -217,7 +216,6 @@ export async function getSharingBoard(req, res) {
     }, {});
   };
 
-  // Convert response data to camelCase
   const camelCaseResponse = mergeBoards(share).map(entry => ({
     board: convertToCamelCase(entry.board),
     collaborators: entry.collaborators.map(collab => convertToCamelCase(collab)),
