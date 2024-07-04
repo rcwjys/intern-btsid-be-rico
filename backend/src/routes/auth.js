@@ -143,12 +143,71 @@ authRouter.post('/api/v1/users/login', tryCatch(login));
  *                       example: token is not exist
  */ 
 authRouter.post('/api/v1/users/logout', tryCatch(logout));
+/**
+ * @swagger
+ * /api/v1/users/reset-password/{token}:
+ *   post:
+ *     summary: Validate password reset
+ *     description: Resets the user's password using the provided reset token.
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Reset token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newPassword:
+ *                 type: string
+ *                 example: newPassword123
+ *               newPasswordConfirmation:
+ *                 type: string
+ *                 example: newPassword123
+ *     responses:
+ *       '204':
+ *         description: Password reset successfully
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: password is must same with password confirmation
+ *       '401':
+ *         description: Unauthorized request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: request to change password is not exist
+ */
 
-authRouter.post('/api/v1/users/forgot-password', tryCatch(forgotPassword));
 
 authRouter.post('/api/v1/users/reset-password/:token', tryCatch(validateForgotPassword));
-
-
-
 
 export {authRouter};

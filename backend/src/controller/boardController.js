@@ -207,6 +207,3 @@ export async function getSharingBoard(req, res) {
     data: mergeBoards(share)
   })
 }
-
-
-
