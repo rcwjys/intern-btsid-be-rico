@@ -108,9 +108,11 @@ export async function shareBoard(req, res) {
 
   if (!collaboratorWithExactEmail) throw new ValidationError('user is not found', 400);
 
-  const boardWIllShared = await prisma.board.findUnique({
+
+  const boardWIllShared = await prisma.board.findFirst({
     where: {
-      board_slug: slug
+      board_slug: slug,
+      author_id: req.userPayload.userId
     }
   });
 
@@ -139,9 +141,10 @@ export async function shareBoard(req, res) {
     }
   });
 
-  await prisma.board.update({
+  await prisma.board.updateMany({
     where: {
-      board_slug: boardWIllShared.board_slug
+      board_slug: boardWIllShared.board_slug,
+      author_id: req.userPayload.userId
     },
     data: {
       is_sharing: true
