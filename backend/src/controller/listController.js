@@ -128,27 +128,31 @@ export async function getListData(req, res) {
     throw new ValidationError("Slug parameter is required");
   }
 
-  const board = await prisma.board.findFirst({
+  // Check if the user is the author of the board with the given slug
+  const authorBoard = await prisma.board.findFirst({
     where: {
       board_slug: slug,
-      OR: [
-        { author_id: req.userPayload.userId },
-        { share: { some: { collaborator_id: req.userPayload.userId } } }
-      ]
-    },
-    include: {
-      author: true,
+      author_id: req.userPayload.userId
+    }
+  });
+
+  // Check if the user is a collaborator on the board with the given slug
+  const collaboratorBoard = await prisma.board.findFirst({
+    where: {
+      board_slug: slug,
       share: {
-        include: {
-          collaborator: true
-        }
+        some: { collaborator_id: req.userPayload.userId }
       }
     }
   });
 
+  // Determine the correct board
+  const board = authorBoard || collaboratorBoard;
+
   if (!board) {
     throw new ValidationError('Board not found or user does not have access', 404);
   }
+
 
   const lists = await prisma.list.findMany({
     where: {
