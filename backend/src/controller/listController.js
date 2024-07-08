@@ -61,27 +61,35 @@ export async function createList(req, res) {
   });
 }
 
-
 export async function getListData(req, res) {
   const slug = req.params.slug;
 
+  if (!slug) {
+    throw new ValidationError("Slug parameter is required");
+  }
+  
   const board = await prisma.board.findFirst({
     where: {
-      board_slug: slug,
-      author_id: req.userPayload.userId
+      OR: [
+        {
+          board_slug: slug,
+          author_id: req.userPayload.userId 
+        },
+        {
+          board_slug: slug,
+          share: { some: { collaborator_id: req.userPayload.userId } } 
+        }
+      ]
     }
   });
 
-  console.log(board);
-
   if (!board) {
-    throw new ValidationError('board is not found', 400);
+    throw new ValidationError('Board not found or user does not have access', 404);
   }
 
   const lists = await prisma.list.findMany({
     where: {
-      board_id: board.board_id,
-      author_id: req.userPayload.userId
+      board_id: board.board_id
     },
     orderBy: {
       createdAt: 'asc'
@@ -93,7 +101,7 @@ export async function getListData(req, res) {
         select: {
           task_id: true,
           task_title: true
-        }, 
+        },
         orderBy: {
           createdAt: 'asc'
         }
@@ -105,13 +113,11 @@ export async function getListData(req, res) {
     return {
       listId: list.list_id,
       listTitle: list.list_title,
-      tasks: list.tasks.map(task => {
-        return  {
-          taskId: task.task_id,
-          taskTitle: task.task_title,
-        }
-      })
-    }
+      tasks: list.tasks.map(task => ({
+        taskId: task.task_id,
+        taskTitle: task.task_title
+      }))
+    };
   });
 
   res.status(200).json({
@@ -119,3 +125,4 @@ export async function getListData(req, res) {
     data: formattedListResponse
   });
 }
+
