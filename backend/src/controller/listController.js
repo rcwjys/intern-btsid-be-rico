@@ -62,65 +62,6 @@ export async function createList(req, res) {
 }
 
 
-// export async function getListData(req, res) {
-//   const slug = req.params.slug;
-
-//   if (!slug) {
-//     throw new ValidationError("Slug parameter is required");
-//   }
-
-//   const board = await prisma.board.findFirst({
-//     where: {
-//       OR: [
-//         {
-//           board_slug: slug,
-//           author_id: req.userPayload.userId
-//         }
-//       ]
-//     }
-//   });
-
-//   if (!board) {
-//     throw new ValidationError('Board not found or user does not have access', 404);
-//   }
-
-//   const lists = await prisma.list.findMany({
-//     where: {
-//       board_id: board.board_id
-//     },
-//     orderBy: {
-//       createdAt: 'asc'
-//     },
-//     select: {
-//       list_id: true,
-//       list_title: true,
-//       tasks: {
-//         select: {
-//           task_id: true,
-//           task_title: true
-//         },
-//         orderBy: {
-//           createdAt: 'asc'
-//         }
-//       }
-//     }
-//   });
-
-//   const formattedListResponse = lists.map(list => ({
-//     listId: list.list_id,
-//     listTitle: list.list_title,
-//     tasks: list.tasks.map(task => ({
-//       taskId: task.task_id,
-//       taskTitle: task.task_title
-//     }))
-//   }));
-
-//   res.status(200).json({
-//     success: true,
-//     data: formattedListResponse
-//   });
-// }
-
 export async function getListData(req, res) {
   const slug = req.params.slug;
 
@@ -128,41 +69,20 @@ export async function getListData(req, res) {
     throw new ValidationError("Slug parameter is required");
   }
 
-  // Find the board where the user is the author
-  const authorBoard = await prisma.board.findFirst({
+  const board = await prisma.board.findFirst({
     where: {
       board_slug: slug,
       author_id: req.userPayload.userId
     }
   });
 
-  // Find the board where the user is a collaborator
-  const collaboratorBoards = await prisma.board.findMany({
-    where: {
-      board_slug: slug,
-      share: {
-        some: { collaborator_id: req.userPayload.userId }
-      }
-    },
-    include: {
-      share: true
-    }
-  });
-
-  // Combine the boards into a single array, prioritizing the author board
-  const boards = [];
-  if (authorBoard) boards.push(authorBoard);
-  boards.push(...collaboratorBoards);
-
-  // Ensure we have at least one board
-  if (boards.length === 0) {
+  if (!board) {
     throw new ValidationError('Board not found or user does not have access', 404);
   }
 
-  // Fetch all lists for the determined board
   const lists = await prisma.list.findMany({
     where: {
-      board_id: boards[0].board_id
+      board_id: board.board_id
     },
     orderBy: {
       createdAt: 'asc'
@@ -198,4 +118,70 @@ export async function getListData(req, res) {
 }
 
 
+export async function getSharedLists(req, res) {
+  const slug = req.params.slug;
 
+  if (!slug) {
+    throw new ValidationError("Slug parameter is required");
+  }
+
+  // Fetch the board based on the slug and user authorization
+  const board = await prisma.board.findFirst({
+    where: {
+      board_slug: slug,
+      is_sharing: true,
+      share: {
+        some: { collaborator_id: req.userPayload.userId }
+      }
+    },
+    include: {
+      author: true,
+      share: {
+        include: {
+          collaborator: true,
+        },
+      },
+    },
+  });
+
+  if (!board) {
+    throw new ValidationError('Shared board not found or user does not have access', 404);
+  }
+
+  // Fetch the lists only if the board is shared with the user
+  const lists = await prisma.list.findMany({
+    where: {
+      board_id: board.board_id,
+    },
+    orderBy: {
+      createdAt: 'asc'
+    },
+    select: {
+      list_id: true,
+      list_title: true,
+      tasks: {
+        select: {
+          task_id: true,
+          task_title: true
+        },
+        orderBy: {
+          createdAt: 'asc'
+        }
+      }
+    }
+  });
+
+  const formattedListResponse = lists.map(list => ({
+    listId: list.list_id,
+    listTitle: list.list_title,
+    tasks: list.tasks.map(task => ({
+      taskId: task.task_id,
+      taskTitle: task.task_title
+    }))
+  }));
+
+  res.status(200).json({
+    success: true,
+    data: formattedListResponse
+  });
+}
