@@ -128,36 +128,41 @@ export async function getListData(req, res) {
     throw new ValidationError("Slug parameter is required");
   }
 
-  // Find all boards with the given slug where the user is the author or a collaborator
-  const boards = await prisma.board.findMany({
+  // Find the board where the user is the author
+  const authorBoard = await prisma.board.findFirst({
     where: {
       board_slug: slug,
-      OR: [
-        { author_id: req.userPayload.userId },
-        { share: { some: { collaborator_id: req.userPayload.userId } } }
-      ]
+      author_id: req.userPayload.userId
+    }
+  });
+
+  // Find the board where the user is a collaborator
+  const collaboratorBoards = await prisma.board.findMany({
+    where: {
+      board_slug: slug,
+      share: {
+        some: { collaborator_id: req.userPayload.userId }
+      }
     },
     include: {
       share: true
     }
   });
 
+  // Combine the boards into a single array, prioritizing the author board
+  const boards = [];
+  if (authorBoard) boards.push(authorBoard);
+  boards.push(...collaboratorBoards);
+
+  // Ensure we have at least one board
   if (boards.length === 0) {
-    throw new ValidationError('Board not found or user does not have access', 404);
-  }
-
-  // Determine the correct board based on the user's role
-  const board = boards.find(b => b.author_id === req.userPayload.userId) || 
-                boards.find(b => b.share.some(share => share.collaborator_id === req.userPayload.userId));
-
-  if (!board) {
     throw new ValidationError('Board not found or user does not have access', 404);
   }
 
   // Fetch all lists for the determined board
   const lists = await prisma.list.findMany({
     where: {
-      board_id: board.board_id
+      board_id: boards[0].board_id
     },
     orderBy: {
       createdAt: 'asc'
@@ -191,5 +196,6 @@ export async function getListData(req, res) {
     data: formattedListResponse
   });
 }
+
 
 
