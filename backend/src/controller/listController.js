@@ -61,25 +61,88 @@ export async function createList(req, res) {
   });
 }
 
+
+// export async function getListData(req, res) {
+//   const slug = req.params.slug;
+
+//   if (!slug) {
+//     throw new ValidationError("Slug parameter is required");
+//   }
+
+//   const board = await prisma.board.findFirst({
+//     where: {
+//       OR: [
+//         {
+//           board_slug: slug,
+//           author_id: req.userPayload.userId
+//         }
+//       ]
+//     }
+//   });
+
+//   if (!board) {
+//     throw new ValidationError('Board not found or user does not have access', 404);
+//   }
+
+//   const lists = await prisma.list.findMany({
+//     where: {
+//       board_id: board.board_id
+//     },
+//     orderBy: {
+//       createdAt: 'asc'
+//     },
+//     select: {
+//       list_id: true,
+//       list_title: true,
+//       tasks: {
+//         select: {
+//           task_id: true,
+//           task_title: true
+//         },
+//         orderBy: {
+//           createdAt: 'asc'
+//         }
+//       }
+//     }
+//   });
+
+//   const formattedListResponse = lists.map(list => ({
+//     listId: list.list_id,
+//     listTitle: list.list_title,
+//     tasks: list.tasks.map(task => ({
+//       taskId: task.task_id,
+//       taskTitle: task.task_title
+//     }))
+//   }));
+
+//   res.status(200).json({
+//     success: true,
+//     data: formattedListResponse
+//   });
+// }
+
 export async function getListData(req, res) {
   const slug = req.params.slug;
 
   if (!slug) {
     throw new ValidationError("Slug parameter is required");
   }
-  
+
   const board = await prisma.board.findFirst({
     where: {
+      board_slug: slug,
       OR: [
-        {
-          board_slug: slug,
-          author_id: req.userPayload.userId 
-        },
-        {
-          board_slug: slug,
-          share: { some: { collaborator_id: req.userPayload.userId } } 
-        }
+        { author_id: req.userPayload.userId },
+        { share: { some: { collaborator_id: req.userPayload.userId } } }
       ]
+    },
+    include: {
+      author: true,
+      share: {
+        include: {
+          collaborator: true
+        }
+      }
     }
   });
 
@@ -109,16 +172,14 @@ export async function getListData(req, res) {
     }
   });
 
-  const formattedListResponse = lists.map(list => {
-    return {
-      listId: list.list_id,
-      listTitle: list.list_title,
-      tasks: list.tasks.map(task => ({
-        taskId: task.task_id,
-        taskTitle: task.task_title
-      }))
-    };
-  });
+  const formattedListResponse = lists.map(list => ({
+    listId: list.list_id,
+    listTitle: list.list_title,
+    tasks: list.tasks.map(task => ({
+      taskId: task.task_id,
+      taskTitle: task.task_title
+    }))
+  }));
 
   res.status(200).json({
     success: true,
