@@ -4,7 +4,6 @@ import { createList, getListData, getSharedLists } from "../controller/listContr
 
 const listRouter = express.Router();
 
-
 /**
  * @swagger
  * /api/v1/lists/{slug}:
@@ -229,8 +228,6 @@ listRouter.post("/api/v1/lists", tryCatch(createList));
  */
 
 listRouter.get("/api/v1/shared-boards/:slug/lists", tryCatch(getSharedLists));
-
-
 
 
 export { listRouter };

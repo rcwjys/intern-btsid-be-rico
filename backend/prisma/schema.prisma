@@ -64,6 +64,8 @@ model Sharing {
   collaborator_id String
   board           Board  @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
   board_id        String
+
+  @@map("shares")
 }
 
 model ResetPassword {

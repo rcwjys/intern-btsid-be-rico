@@ -125,7 +125,6 @@ export async function getSharedLists(req, res) {
     throw new ValidationError("Slug parameter is required");
   }
 
-  // Fetch the board based on the slug and user authorization
   const board = await prisma.board.findFirst({
     where: {
       board_slug: slug,
@@ -144,11 +143,12 @@ export async function getSharedLists(req, res) {
     },
   });
 
+  console.log(board);
+
   if (!board) {
     throw new ValidationError('Shared board not found or user does not have access', 404);
   }
 
-  // Fetch the lists only if the board is shared with the user
   const lists = await prisma.list.findMany({
     where: {
       board_id: board.board_id,
