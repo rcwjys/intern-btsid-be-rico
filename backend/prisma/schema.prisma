@@ -19,6 +19,9 @@ model User {
   tasks         Task[]
   share         Sharing[]
   reset         ResetPassword[]
+
+  @@index([user_id, user_email])
+  @@map("users")
 }
 
 model Board {
@@ -32,6 +35,9 @@ model Board {
   author_id   String
   lists       List[]
   share       Sharing[]
+
+  @@index([board_id])
+  @@map("boards")
 }
 
 model List {
@@ -44,6 +50,9 @@ model List {
   boards     Board    @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
   board_id   String
   tasks      Task[]
+
+  @@index([list_id])
+  @@map("lists")
 }
 
 model Task {
@@ -55,6 +64,9 @@ model Task {
   author_id  String
   lists      List     @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
   list_id    String
+
+  @@index([task_id])
+  @@map("tasks")
 }
 
 model Sharing {
