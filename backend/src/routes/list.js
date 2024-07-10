@@ -6,14 +6,14 @@ const listRouter = express.Router();
 
 /**
  * @swagger
- * /api/v1/lists/{slug}:
+ * /api/v1/lists/{boardId}:
  *   get:
  *     summary: Get specific lists and tasks related to a board
  *     description: Retrieve specific lists and tasks related to a board using the slug parameter.
  *     tags: [List]
  *     parameters:
  *       - in: path
- *         name: slug
+ *         name: boardId
  *         required: true
  *         schema:
  *           type: string
