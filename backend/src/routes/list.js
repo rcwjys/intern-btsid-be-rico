@@ -228,7 +228,7 @@ listRouter.post("/api/v1/lists", tryCatch(createList));
  *                       example: "Internal server error"
  */
 
-listRouter.get("/api/v1/shared-boards/:slug/lists", tryCatch(getSharedLists));
+// listRouter.get("/api/v1/shared-boards/:slug/lists", tryCatch(getSharedLists));
 
 
 export { listRouter };

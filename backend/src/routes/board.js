@@ -202,16 +202,16 @@ boardRouter.post("/api/v1/boards", tryCatch(createBoard));
 boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
 /**
  * @swagger
- * /api/v1/boards/{slug}/shares:
+ * /api/v1/boards/{boardId}/shares:
  *   post:
  *     summary: Share a board with a collaborator
  *     description: Share a specific board identified by its slug with a collaborator by their email.
  *     tags: [Boards]
  *     parameters:
  *       - in: path
- *         name: slug
+ *         name: BoardId
  *         required: true
- *         description: The slug of the board to be shared
+ *         description: The boardId of the board to be shared
  *         schema:
  *           type: string
  *     requestBody:
@@ -262,7 +262,7 @@ boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
  *                       example: "Internal server error"
  */
 
-boardRouter.post("/api/v1/boards/:slug/shares", tryCatch(shareBoard));
+boardRouter.post("/api/v1/boards/:boardId/shares", tryCatch(shareBoard));
 
 
 export { boardRouter };

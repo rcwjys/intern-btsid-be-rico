@@ -92,7 +92,9 @@ export async function getBoardData(req, res) {
 
 export async function shareBoard(req, res) {
   
-  const slug = req.params.slug;
+  const boardId = req.params.boardId;
+
+  if (!boardId) throw new ValidationError('Board is required', 400);
 
   const shareSchema = z.object({
     collaboratorEmail: z.string().min(1)
@@ -109,10 +111,9 @@ export async function shareBoard(req, res) {
   if (!collaboratorWithExactEmail) throw new ValidationError('user is not found', 400);
 
 
-  const boardWIllShared = await prisma.board.findFirst({
+  const boardWIllShared = await prisma.board.findUnique({
     where: {
-      board_slug: slug,
-      author_id: req.userPayload.userId
+      board_id: boardId
     }
   });
 
