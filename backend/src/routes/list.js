@@ -67,7 +67,8 @@ const listRouter = express.Router();
  */
 
 
-listRouter.get("/api/v1/lists/:slug", tryCatch(getListData));
+// listRouter.get("/api/v1/lists/:slug", tryCatch(getListData));
+listRouter.get("/api/v1/lists/:boardId", tryCatch(getListData));
 
 /**
  * @swagger

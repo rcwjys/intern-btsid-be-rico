@@ -62,22 +62,79 @@ export async function createList(req, res) {
 }
 
 
-export async function getListData(req, res) {
-  const slug = req.params.slug;
+// export async function getListData(req, res) {
 
-  if (!slug) {
-    throw new ValidationError("Slug parameter is required");
+//   const slug = req.params.slug;
+
+//   if (!slug) {
+//     throw new ValidationError("Slug parameter is required");
+//   }
+
+//   const board = await prisma.board.findFirst({
+//     where: {
+//       board_slug: slug,
+//       author_id: req.userPayload.userId
+//     }
+//   });
+
+//   if (!board) {
+//     throw new ValidationError('Board not found or user does not have access', 404);
+//   }
+
+//   const lists = await prisma.list.findMany({
+//     where: {
+//       board_id: board.board_id
+//     },
+//     orderBy: {
+//       createdAt: 'asc'
+//     },
+//     select: {
+//       list_id: true,
+//       list_title: true,
+//       tasks: {
+//         select: {
+//           task_id: true,
+//           task_title: true
+//         },
+//         orderBy: {
+//           createdAt: 'asc'
+//         }
+//       }
+//     }
+//   });
+
+//   const formattedListResponse = lists.map(list => ({
+//     listId: list.list_id,
+//     listTitle: list.list_title,
+//     tasks: list.tasks.map(task => ({
+//       taskId: task.task_id,
+//       taskTitle: task.task_title
+//     }))
+//   }));
+
+//   res.status(200).json({
+//     success: true,
+//     data: formattedListResponse
+//   });
+// }
+
+export async function getListData(req, res) {
+  
+  const boardId = req.params.boardId;
+
+
+  if (!boardId) {
+    throw new ValidationError("boardId parameter is required");
   }
 
-  const board = await prisma.board.findFirst({
+  const board = await prisma.board.findUnique({
     where: {
-      board_slug: slug,
-      author_id: req.userPayload.userId
+      board_id: boardId
     }
   });
 
   if (!board) {
-    throw new ValidationError('Board not found or user does not have access', 404);
+    throw new ValidationError('Board not found', 404);
   }
 
   const lists = await prisma.list.findMany({
@@ -142,8 +199,6 @@ export async function getSharedLists(req, res) {
       },
     },
   });
-
-  console.log(board);
 
   if (!board) {
     throw new ValidationError('Shared board not found or user does not have access', 404);
