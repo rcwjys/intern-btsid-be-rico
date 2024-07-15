@@ -18,9 +18,8 @@ export async function register(req, res) {
 
   const userData = await RegistrationSchema.parseAsync(req.body);
 
-  if (req.body.password !== req.body.passwordConfirmation) {
-    throw new ValidationError('Password and Password Confirmation Must Same', 400);
-  }
+  if (req.body.password !== req.body.passwordConfirmation) throw new ValidationError('Password and Password Confirmation Must Same', 400);
+  
 
   const user = await prisma.user.findUnique({
     where: {
@@ -28,9 +27,7 @@ export async function register(req, res) {
     }
   });
 
-  if (user) {
-    throw new ValidationError('Email is used, please use another email', 400);
-  }
+  if (user) throw new ValidationError('Email is used, please use another email', 400);
 
   const hashedPassword = await bcrypt.hash(userData.password, 10);
 
@@ -61,15 +58,11 @@ export async function login(req, res) {
     }
   });
 
-  if (!user) {
-    throw new UnAuthorize('email or username wrong', 401);
-  }
+  if (!user) throw new UnAuthorize('email or username wrong', 401);
 
   const isMatch = await bcrypt.compare(credential.password, user.user_password);
 
-  if (!isMatch) {
-    throw new UnAuthorize('email or username wrong', 401);
-  }
+  if (!isMatch) throw new UnAuthorize('email or username wrong', 401);
 
   const accessToken = await genereateAccessToken({
     userId: user.user_id,
@@ -129,13 +122,9 @@ export async function forgotPassword(req, res) {
     }
   });
 
-  if (!userWithExactEmail) {
-    throw new ValidationError('user is not exists', 401)
-  }
+  if (!userWithExactEmail) throw new ValidationError('user is not exists', 401)
 
   const resetToken = await generateResetToken();
-
-  console.log(resetToken);
 
   const resetLink = `${process.env.BASE_URL}/users/reset-password/${resetToken}`;
 
@@ -148,8 +137,6 @@ export async function forgotPassword(req, res) {
   );
 
   const isSuccess = await sendEmail(mailOptions); 
-
-  console.log();
 
   if (isSuccess.response.split(' ')[1] !== 'OK') throw new ValidationError('something went wrong while send the email', 500);
 
@@ -173,9 +160,7 @@ export async function validateForgotPassword(req, res) {
 
   const request = await changePasswordSchema.parseAsync(req.body);
   
-  if (!request.newPassword === request.newPasswordConfirmation) {
-    throw new ValidationError('password is must same with password confirmation', 400);
-  }
+  if (!request.newPassword === request.newPasswordConfirmation) throw new ValidationError('password is must same with password confirmation', 400);
   
   const token = req.params.token;
 

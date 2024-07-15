@@ -16,9 +16,7 @@ export async function createTask(req, res) {
     }
   });
 
-  if (!isListExists) {
-    throw new ValidationError('list is not exists', 400);
-  }
+  if (!isListExists) throw new ValidationError('list is not exists', 400);
 
   const isAuthorExists = await prisma.user.findUnique({
     where: {
@@ -26,9 +24,7 @@ export async function createTask(req, res) {
     }
   });
 
-  if (!isAuthorExists) {
-    throw new ValidationError('author is not exists', 400);
-  }
+  if (!isAuthorExists) throw new ValidationError('author is not exists', 400);
 
 
   const createdTask = await prisma.task.create({
@@ -69,13 +65,9 @@ export async function updateTask(req, res) {
     }
   });
 
-  if (!task) {
-    throw new ValidationError('task is not found', 400);
-  }
+  if (!task) throw new ValidationError('task is not found', 400);
 
-  if (!list) {
-    throw new ValidationError('list is not found', 400)
-  }
+  if (!list) throw new ValidationError('list is not found', 400)
 
   const updatedTask = await prisma.task.update({
     where: {

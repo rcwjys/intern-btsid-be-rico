@@ -19,9 +19,7 @@ export async function createList(req, res) {
     }
   });
 
-  if (list) {
-    throw new ValidationError('list is already exists', 400);
-  }
+  if (list) throw new ValidationError('list is already exists', 400);
 
   const isBoardExist = await prisma.board.findUnique({
     where: {
@@ -29,9 +27,8 @@ export async function createList(req, res) {
     }
   });
 
-  if (!isBoardExist) {
-    throw new ValidationError('board is not exists', 400)
-  }
+  if (!isBoardExist) throw new ValidationError('board is not exists', 400);
+  
 
   const isUserExists = await prisma.user.findUnique({
     where: {
@@ -39,9 +36,8 @@ export async function createList(req, res) {
     }
   });
 
-  if (!isUserExists) {
-    throw new ValidationError('user is not exists', 400)
-  }
+  if (!isUserExists) throw new ValidationError('user is not exists', 400);
+  
 
   const createdList = await prisma.list.create({
     data: {
@@ -61,71 +57,11 @@ export async function createList(req, res) {
   });
 }
 
-
-// export async function getListData(req, res) {
-
-//   const slug = req.params.slug;
-
-//   if (!slug) {
-//     throw new ValidationError("Slug parameter is required");
-//   }
-
-//   const board = await prisma.board.findFirst({
-//     where: {
-//       board_slug: slug,
-//       author_id: req.userPayload.userId
-//     }
-//   });
-
-//   if (!board) {
-//     throw new ValidationError('Board not found or user does not have access', 404);
-//   }
-
-//   const lists = await prisma.list.findMany({
-//     where: {
-//       board_id: board.board_id
-//     },
-//     orderBy: {
-//       createdAt: 'asc'
-//     },
-//     select: {
-//       list_id: true,
-//       list_title: true,
-//       tasks: {
-//         select: {
-//           task_id: true,
-//           task_title: true
-//         },
-//         orderBy: {
-//           createdAt: 'asc'
-//         }
-//       }
-//     }
-//   });
-
-//   const formattedListResponse = lists.map(list => ({
-//     listId: list.list_id,
-//     listTitle: list.list_title,
-//     tasks: list.tasks.map(task => ({
-//       taskId: task.task_id,
-//       taskTitle: task.task_title
-//     }))
-//   }));
-
-//   res.status(200).json({
-//     success: true,
-//     data: formattedListResponse
-//   });
-// }
-
 export async function getListData(req, res) {
   
   const boardId = req.params.boardId;
 
-
-  if (!boardId) {
-    throw new ValidationError("boardId parameter is required");
-  }
+  if (!boardId) throw new ValidationError("boardId parameter is required");
 
   const board = await prisma.board.findUnique({
     where: {
@@ -133,9 +69,7 @@ export async function getListData(req, res) {
     }
   });
 
-  if (!board) {
-    throw new ValidationError('Board not found', 404);
-  }
+  if (!board) throw new ValidationError('Board not found', 404);
 
   const lists = await prisma.list.findMany({
     where: {
@@ -178,10 +112,8 @@ export async function getListData(req, res) {
 export async function getSharedLists(req, res) {
   const slug = req.params.slug;
 
-  if (!slug) {
-    throw new ValidationError("Slug parameter is required");
-  }
-
+  if (!slug) throw new ValidationError("Slug parameter is required");
+  
   const board = await prisma.board.findFirst({
     where: {
       board_slug: slug,
@@ -200,9 +132,7 @@ export async function getSharedLists(req, res) {
     },
   });
 
-  if (!board) {
-    throw new ValidationError('Shared board not found or user does not have access', 404);
-  }
+  if (!board) throw new ValidationError('Shared board not found or user does not have access', 404);
 
   const lists = await prisma.list.findMany({
     where: {
@@ -240,3 +170,4 @@ export async function getSharedLists(req, res) {
     data: formattedListResponse
   });
 }
+

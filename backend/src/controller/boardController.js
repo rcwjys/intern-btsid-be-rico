@@ -19,9 +19,7 @@ export async function createBoard(req, res) {
     }
   });
 
-  if (isBoardExist) {
-    throw new ValidationError('Board is already exists', 400);
-  }
+  if (isBoardExist) throw new ValidationError('Board is already exists', 400);
 
   const isAuthorExists = await prisma.user.findUnique({
     where: {
@@ -29,9 +27,7 @@ export async function createBoard(req, res) {
     }
   });
 
-  if (!isAuthorExists) {
-    throw new ValidationError('author is not exists', 400);
-  }
+  if (!isAuthorExists) throw new ValidationError('author is not exists', 400);
 
   const createdBoard = await prisma.board.create({
     data: {
@@ -59,9 +55,7 @@ export async function getBoardData(req, res) {
     }
   });
 
-  if (!isValidUserId) {
-    throw new NotFound('board is not found', 404);
-  }
+  if (!isValidUserId) throw new NotFound('board is not found', 404);
 
   const boards = await prisma.board.findMany({
     where: {
@@ -110,16 +104,13 @@ export async function shareBoard(req, res) {
 
   if (!collaboratorWithExactEmail) throw new ValidationError('user is not found', 400);
 
-
   const boardWIllShared = await prisma.board.findUnique({
     where: {
       board_id: boardId
     }
   });
 
-  if (!boardWIllShared) {
-    throw new ValidationError('board is not found', 400);
-  }
+  if (!boardWIllShared) throw new ValidationError('board is not found', 400);
 
   if (collaboratorWithExactEmail.user_id === boardWIllShared.author_id) throw new ValidationError('board is cannot share with your account', 400);
 
@@ -130,9 +121,7 @@ export async function shareBoard(req, res) {
     }
   });
 
-  if (isDoubleShared) {
-    throw new ValidationError('board is shared already shared');
-  }
+  if (isDoubleShared) throw new ValidationError('board is shared already shared');
 
   await prisma.sharing.create({
     data: {
