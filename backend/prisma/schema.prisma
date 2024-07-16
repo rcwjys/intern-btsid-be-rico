@@ -8,17 +8,19 @@ datasource db {
 }
 
 model User {
-  user_id       String          @id @default(uuid())
-  user_email    String          @unique
-  user_name     String
-  user_password String
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  boards        Board[]
-  lists         List[]
-  tasks         Task[]
-  share         Sharing[]
-  reset         ResetPassword[]
+  registration_id     String             @unique
+  user_id             String             @id @default(uuid())
+  user_email          String             @unique
+  user_name           String
+  user_password       String
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  boards              Board[]
+  lists               List[]
+  tasks               Task[]
+  share               Sharing[]
+  reset               ResetPassword[]
+  verify_registration VerifyRegistration @relation(fields: [registration_id], references: [registration_id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([user_id, user_email])
   @@map("users")
@@ -88,4 +90,20 @@ model ResetPassword {
   isUse       Boolean  @default(false)
   user        User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
   user_id     String
+
+  @@map("user_reset_passwords")
+}
+
+model VerifyRegistration {
+  registration_id    String   @id @default(uuid())
+  user_email         String   @unique
+  user_name          String
+  user_password      String
+  is_verified        Boolean  @default(false)
+  registration_token String   @unique
+  expiredAt          String
+  createdAt          DateTime @default(now())
+  user               User?
+
+  @@map("user_verify_registrations")
 }

@@ -1,5 +1,5 @@
 import express from 'express';
-import { forgotPassword, login, logout, register, validateForgotPassword } from '../controller/authController.js';
+import { forgotPassword, login, logout, register, validateForgotPassword, verifyRegistration } from '../controller/authController.js';
 import { tryCatch } from '../utils/tryCatch.js';
 
 const authRouter = express.Router();
@@ -53,6 +53,60 @@ const authRouter = express.Router();
 
 
 authRouter.post('/api/v1/users/register', tryCatch(register));
+
+
+/**
+ * @swagger
+ * /api/v1/users/verify/{registrationToken}:
+ *   post:
+ *     summary: Verify user registration
+ *     description: Verifies the user registration with the provided registration token.
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: registrationToken
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The registration token sent to the user's email
+ *     responses:
+ *       '204':
+ *         description: User successfully verified
+ *       '400':
+ *         description: Bad request due to missing or invalid registration token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: cannot access regist verification token at params
+ *       '401':
+ *         description: Unauthorized request due to invalid token, expired token, or already active account
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                        type: string
+ *                        example: verify registration token is already expired, please resubmit your credentials
+ */
+
+authRouter.post('/api/v1/users/verify/:registrationToken', tryCatch(verifyRegistration));
 
 /**
  * @swagger

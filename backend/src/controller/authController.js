@@ -2,7 +2,7 @@ import { number, z } from 'zod';
 import { UnAuthorize, ValidationError } from '../utils/error.js';
 import { prisma } from '../utils/prismaClient.js';
 import bcrypt from 'bcrypt';
-import { generateResetToken, genereateAccessToken } from '../utils/tokenGenerator.js';
+import { generateCryptoToken, genereateAccessToken } from '../utils/tokenGenerator.js';
 import { verifyToken } from '../utils/verifyToken.js';
 import validator from "validator";
 import { createMailOptions, sendEmail } from '../utils/sendEmail.js';
@@ -21,7 +21,7 @@ export async function register(req, res) {
   if (req.body.password !== req.body.passwordConfirmation) throw new ValidationError('Password and Password Confirmation Must Same', 400);
   
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.verifyRegistration.findUnique({
     where: {
       user_email: userData.email
     }
@@ -30,21 +30,85 @@ export async function register(req, res) {
   if (user) throw new ValidationError('Email is used, please use another email', 400);
 
   const hashedPassword = await bcrypt.hash(userData.password, 10);
+  
+  const verifyToken = await generateCryptoToken();
 
-  await prisma.user.create({
+  const newUser = await prisma.verifyRegistration.create({
     data: {
       user_email: userData.email,
       user_name: userData.name,
-      user_password: hashedPassword
+      user_password: hashedPassword,
+      registration_token: verifyToken,
+      expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleString()
     }
   });
 
-  res.sendStatus(201);
+  const verificationLink = `${process.env.BASE_URL}/users/verify/${verifyToken}`;
 
+  const mailOptions = createMailOptions(
+    'wtefek@gmail.com',
+    newUser.user_email,
+    'Verify Your Plantify Account',
+    `Hello, ${newUser.user_name} You are receiving this email because you are not verify registration with your account. Please click on the following link to verify your account: ${verificationLink}`,
+    `<p>Hello, ${newUser.user_name} You are receiving this email because you are not verify registration with your account. Please click on the following link to verify your account:</p><p><a href="${verificationLink}">Verify</a></p>`
+  );
+
+  const isSuccess = await sendEmail(mailOptions); 
+
+  if (isSuccess.response.split(' ')[1] !== 'OK') throw new ValidationError('failed create users and something went wrong while send the email', 500);
+
+  res.sendStatus(201);
+  
+}
+
+export async function verifyRegistration(req, res) {
+
+  const token = req.params.registrationToken;
+
+  if (!token) throw new ValidationError('cannot access regist verification token at params', 400);
+
+  const user = await prisma.verifyRegistration.findFirst({
+    where: {
+      registration_token: token,
+      is_verified: false
+    }
+  });
+
+  if (!user) throw new ValidationError('Account is already active', 401);
+
+  if (new Date(Date.now()).toLocaleString() > user.expiredAt) {
+
+    await prisma.verifyRegistration.delete({
+      where: {
+        registration_token: user.registration_token
+      }
+    });
+
+    throw new ValidationError('verify registration token is already expired, please resubmit your credentials', 401);
+  } 
+
+  await prisma.user.create({
+    data: {
+      registration_id: user.registration_id,
+      user_email: user.user_email,
+      user_name: user.user_name,
+      user_password: user.user_password
+    }
+  });
+
+  await prisma.verifyRegistration.update({
+    where: {
+      registration_token: token
+    },
+    data: {
+      is_verified: true
+    }
+  })
+
+  res.sendStatus(204);
 }
 
 export async function login(req, res) {
-
   const loginSchema = z.object({
     email: z.string().email(),
     password: z.string()
@@ -58,11 +122,13 @@ export async function login(req, res) {
     }
   });
 
-  if (!user) throw new UnAuthorize('email or username wrong', 401);
+  if (!user) throw new UnAuthorize('email or username wrong or your account is not activated yet', 401);
 
   const isMatch = await bcrypt.compare(credential.password, user.user_password);
 
   if (!isMatch) throw new UnAuthorize('email or username wrong', 401);
+
+  if (user.is_verify === false) throw new ValidationError('Your account is not active, please verify it on your email', 403);
 
   const accessToken = await genereateAccessToken({
     userId: user.user_id,
@@ -124,7 +190,7 @@ export async function forgotPassword(req, res) {
 
   if (!userWithExactEmail) throw new ValidationError('user is not exists', 401)
 
-  const resetToken = await generateResetToken();
+  const resetToken = await generateCryptoToken();
 
   const resetLink = `${process.env.BASE_URL}/users/reset-password/${resetToken}`;
 

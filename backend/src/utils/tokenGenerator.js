@@ -20,6 +20,7 @@ export async function genereateRefreshToken(payload) {
   });
 };
 
-export async function generateResetToken() {
+export async function generateCryptoToken() {
   return crypto.randomBytes(64).toString('hex');
 }
+
