@@ -57,10 +57,10 @@ io.on('connection', async (socket) => {
             }
           });
 
-          const formattedResponse = Array.from(createList).map((item) => ({
-            listId: item.list_id,
-            listTitle: item.list_title
-          }))
+          const formattedResponse = {
+            listId: createdList.list_id,
+            listTitle: createdList.list_title
+          }
 
           io.to(boardId).emit('createdList', { formattedResponse });
 
