@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import { app } from '../web.js';
 import { socketMiddleware } from '../../middleware/socket.js';
 import { prisma } from '../../utils/prismaClient.js';
+import { createList } from '../../controller/listController.js';
 
 export const server = createServer(app);
 
@@ -56,7 +57,12 @@ io.on('connection', async (socket) => {
             }
           });
 
-          io.to(boardId).emit('createdList', { createdList });
+          const formattedResponse = Array.from(createList).map((item) => ({
+            listId: item.list_id,
+            listTitle: item.list_title
+          }))
+
+          io.to(boardId).emit('createdList', { formattedResponse });
 
         } catch (err) {
           console.log(err);
