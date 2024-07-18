@@ -16,7 +16,7 @@ io.use(socketMiddleware);
 
 
 io.on('connection', async (socket) => {
-  const userId = socket.userPayload?.user_id;
+  const userId = socket.userPayload.userId;
 
   socket.on('join-board', async (boardId) => {
     try {
@@ -43,8 +43,8 @@ io.on('connection', async (socket) => {
 
       socket.join(boardId);
 
-      console.log(`${userId} joined room`);
-      
+      console.log(`${userId} connected to room`);
+
       socket.on('createList', async (data) => {
       
         const { listId } = data;
