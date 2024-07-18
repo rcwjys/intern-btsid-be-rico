@@ -42,6 +42,8 @@ io.on('connection', async (socket) => {
       }
 
       socket.join(boardId);
+
+      console.log(`${userId} joined room`);
       
       socket.on('createList', async (data) => {
       
