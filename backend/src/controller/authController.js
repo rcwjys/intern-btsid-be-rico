@@ -103,7 +103,7 @@ export async function verifyRegistration(req, res) {
     data: {
       is_verified: true
     }
-  })
+  });
 
   res.sendStatus(204);
 }

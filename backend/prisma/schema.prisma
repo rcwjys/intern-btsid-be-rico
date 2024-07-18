@@ -76,7 +76,7 @@ model Sharing {
   author_id       String
   collaborator    User   @relation(fields: [collaborator_id], references: [user_id], onDelete: Cascade)
   collaborator_id String
-  board           Board  @relation(fields: [board_id], references: [board_id], onDelete: Cascade)
+  board           Board  @relation(fields: [board_id], references: [board_id])
   board_id        String
 
   @@map("shares")

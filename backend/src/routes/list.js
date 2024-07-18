@@ -105,6 +105,9 @@ listRouter.get("/api/v1/lists/:boardId", tryCatch(getListData));
  *                 data:
  *                   type: object
  *                   properties:
+ *                     listId: 
+ *                       type: string
+ *                       example: 4290e6a0-8dde-4601-8b29-69d377966051
  *                     listTitle:
  *                       type: string
  *                       description: The title of the created list.
