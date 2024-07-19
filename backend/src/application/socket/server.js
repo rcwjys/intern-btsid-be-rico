@@ -62,7 +62,7 @@ io.on('connection', async (socket) => {
             listTitle: createdList.list_title
           }
 
-          io.to(boardId).emit('createdList', { formattedResponse });
+          io.to(boardId).emit('createdList', formattedResponse );
 
         } catch (err) {
           console.log(err);
