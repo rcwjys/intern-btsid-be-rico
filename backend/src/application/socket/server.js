@@ -123,7 +123,7 @@ io.on('connection', async (socket) => {
 
   handleCreateBoardEvent(socket);
 
-  handleCreateBoardEvent(socket);
+  handleCreateTask(socket);
 
 
 
