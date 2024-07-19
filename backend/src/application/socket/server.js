@@ -89,9 +89,6 @@ function handleCreateTask(socket) {
         },
         include: {
           lists: {
-            select: {
-              list_id: true,
-            },
             include: {
               boards: {
                 select: {
