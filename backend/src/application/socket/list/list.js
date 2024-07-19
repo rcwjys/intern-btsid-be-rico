@@ -1,6 +1,5 @@
-export function createList(socket) {
+export async function createList(socket, next) {
   socket.on('createList', async (data) => {
-      
     const { listId } = data;
 
     try {
@@ -16,6 +15,8 @@ export function createList(socket) {
       }
 
       io.to(boardId).emit('createdList', formattedResponse );
+
+      next()
 
     } catch (err) {
       console.log(err);
