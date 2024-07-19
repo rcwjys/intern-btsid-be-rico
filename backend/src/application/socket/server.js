@@ -78,6 +78,43 @@ async function handleCreateBoardEvent(socket) {
 }
 
 
+function handleCreateTask(socket) {
+  socket.on('createTask', async (data) => {
+    const { taskId } = data;
+
+    try {
+      const newTask = await prisma.task.findUnique({
+        where: {
+          task_id: taskId
+        },
+        include: {
+          lists: {
+            include: {
+              boards: {
+                select: {
+                  board_id: true
+                }
+              }
+            }
+          }
+        }
+      });
+
+      const formattedTaskResponse = {
+        taskId: newTask.task_id,
+        taskTitle: newTask.task_title
+      }
+
+      io.to(newTask.lists.board_id).emit('createdTask', formattedTaskResponse);
+
+    } catch (err) {
+      console.log(err);
+      socket.emit('error', err.message);
+    }
+  });
+}
+
+
 io.on('connection', async (socket) => {
 
   const userId = socket.userPayload.userId;

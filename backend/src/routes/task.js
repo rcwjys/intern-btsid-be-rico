@@ -36,6 +36,9 @@ const taskRouter = express.Router();
  *                 data:
  *                   type: object
  *                   properties:
+ *                     listId: 
+ *                       type: string
+ *                       example: 4290e6a0-8dde-4601-8b29-69d377966051
  *                     taskTitle:
  *                       type: string
  *                     createdAt:
