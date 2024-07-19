@@ -3,7 +3,6 @@ import { createServer } from 'http';
 import { app } from '../web.js';
 import { socketMiddleware } from '../../middleware/socket.js';
 import { prisma } from '../../utils/prismaClient.js';
-import { createList } from './list/list.js';
 
 export const server = createServer(app);
 
@@ -16,9 +15,7 @@ const io = new Server(server, {
 io.use(socketMiddleware);
 
 
-io.on('connection', async (socket) => {
-  const userId = socket.userPayload.userId;
-
+async function handleJoinBoardEvent(socket, userId) {
   socket.on('join-board', async (boardId) => {
     try {
       const board = await prisma.board.findUnique({
@@ -41,15 +38,55 @@ io.on('connection', async (socket) => {
       if (!isOwner && !isCollaborator) {
         return socket.emit('error', 'Not authorized to join this board');
       }
-
+      
       socket.join(boardId);
-
-      io.use(createList);
-
+    
     } catch (err) {
       console.log(err);
       socket.emit('error', 'An error occurred while joining the board');
     }
   });
+}
+
+
+async function handleCreateBoardEvent(socket) {
+
+  socket.on('createList', async (data) => {
+    const { listId } = data;
+
+    try {
+      const createdList = await prisma.list.findUnique({
+        where: {
+          list_id: listId
+        }
+      });
+
+      const formattedResponse = {
+        listId: createdList.list_id,
+        listTitle: createdList.list_title
+      }
+
+      const { board_id } = createdList;
+
+      io.to(board_id).emit('createdList', formattedResponse );
+
+    } catch (err) {
+      console.log(err);
+      socket.emit('error', 'An error occured');
+    }
+  });
+}
+
+
+io.on('connection', async (socket) => {
+
+  const userId = socket.userPayload.userId;
+
+  handleJoinBoardEvent(socket, userId);
+
+  handleCreateBoardEvent(socket);
+
+
+
 });
 
