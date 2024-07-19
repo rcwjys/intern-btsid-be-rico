@@ -89,6 +89,9 @@ function handleCreateTask(socket) {
         },
         include: {
           lists: {
+            select: {
+              list_id: true,
+            },
             include: {
               boards: {
                 select: {
@@ -101,6 +104,7 @@ function handleCreateTask(socket) {
       });
 
       const formattedTaskResponse = {
+        listId: newTask.list_id,
         taskId: newTask.task_id,
         taskTitle: newTask.task_title
       }
