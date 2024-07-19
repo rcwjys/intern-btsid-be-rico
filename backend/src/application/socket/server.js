@@ -3,7 +3,7 @@ import { createServer } from 'http';
 import { app } from '../web.js';
 import { socketMiddleware } from '../../middleware/socket.js';
 import { prisma } from '../../utils/prismaClient.js';
-import { createList } from '../../controller/listController.js';
+import { createList } from './list/list.js';
 
 export const server = createServer(app);
 

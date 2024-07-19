@@ -21,6 +21,7 @@ export async function createList(socket, next) {
     } catch (err) {
       console.log(err);
       socket.emit('error', 'An error occured');
+      next()
     }
   });
 }
