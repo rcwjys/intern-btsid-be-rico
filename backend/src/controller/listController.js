@@ -19,7 +19,11 @@ export async function createList(req, res) {
     }
   });
 
-  if (listData.listTitle === list.list_title) throw new ValidationError('list is already exists', 400);
+  console.log(list.list_title);
+
+  // if (listData.listTitle === list.list_title) throw new ValidationError('list is already exists', 400);
+
+  if (list) throw new ValidationError('list is already exists', 400);
 
   const isBoardExist = await prisma.board.findUnique({
     where: {
