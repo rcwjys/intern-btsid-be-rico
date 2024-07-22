@@ -97,6 +97,9 @@ taskRouter.post('/api/v1/tasks', tryCatch(createTask));
  *                 data:
  *                   type: object
  *                   properties:
+ *                     oldListId:
+ *                       type: string
+ *                       example: "381fef39-f321-41bc-a29f-dc5d1159a3a1"
  *                     taskId:
  *                       type: string
  *                       example: "04a370d0-44de-4d65-8312-439a4d553100"
