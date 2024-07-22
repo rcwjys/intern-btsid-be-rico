@@ -154,6 +154,8 @@ export async function shareBoard(req, res) {
     success: true,
     data: formattedResponse
   });
+
+  
 }
 
 export async function getSharingBoard(req, res) {

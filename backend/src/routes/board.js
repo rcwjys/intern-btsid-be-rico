@@ -281,8 +281,6 @@ boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
  *                       type: string
  *                       example: "Internal server error"
  */
-
-
 boardRouter.post("/api/v1/boards/:boardId/shares", tryCatch(shareBoard));
 
 

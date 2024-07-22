@@ -117,7 +117,7 @@ function handleCreateTask(socket) {
 
 function handleUpdateTask(socket) {
   socket.on('updateTask', async (data) => {
-    const { listId, taskId } = data;
+    const { taskId } = data;
 
     try {
       const updatedTask = await prisma.task.findUnique({
@@ -155,9 +155,7 @@ function handleUpdateTask(socket) {
   });
 }
 
-function handleOnShareBoard(socket) {
-  // socket.emit('join-board', );
-}
+
 
 
 
@@ -173,8 +171,6 @@ io.on('connection', async (socket) => {
   handleCreateTask(socket);
 
   handleUpdateTask(socket);
-
-  handleOnShareBoard(socket);
 
 });
 
