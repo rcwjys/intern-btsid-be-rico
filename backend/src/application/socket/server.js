@@ -38,8 +38,10 @@ async function handleJoinBoardEvent(socket, userId) {
       if (!isOwner && !isCollaborator) {
         return socket.emit('error', 'Not authorized to join this board');
       }
-      
-    socket.join(boardId).emit('joinedBoard', boardId);
+
+      socket.join(boardId, () => {
+        socket.emit('joinedBoard', boardId);
+      });
     
     } catch (err) {
       console.log(err);
@@ -68,7 +70,7 @@ async function handleCreateBoardEvent(socket) {
 
       const { board_id } = createdList;
 
-      io.to(board_id).emit('createdList', formattedResponse );
+      io.to(board_id).emit('createdList', formattedResponse);
 
     } catch (err) {
       console.log(err);
