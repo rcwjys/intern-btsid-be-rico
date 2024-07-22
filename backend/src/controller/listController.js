@@ -14,14 +14,9 @@ export async function createList(req, res) {
   const list = await prisma.list.findFirst({
     where: {
       list_title: listData.listTitle,
-      author_id: req.userPayload.userId,
       board_id: listData.boardId,
     }
   });
-
-  console.log(list);
-
-  // if (listData.listTitle === list.list_title) throw new ValidationError('list is already exists', 400);
 
   if (list) throw new ValidationError('list is already exists', 400);
 
@@ -48,6 +43,9 @@ export async function createList(req, res) {
       list_title: listData.listTitle,
       board_id: listData.boardId,
       author_id: isUserExists.user_id
+    },
+    include: {
+      tasks: true
     }
   });
 
@@ -56,6 +54,7 @@ export async function createList(req, res) {
     data: {
       listId: createdList.list_id,
       listTitle: createdList.list_title,
+      task: createdList.tasks,
       createdAt: createdList.createdAt
     }
   });

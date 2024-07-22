@@ -40,10 +40,7 @@ async function handleJoinBoardEvent(socket, userId) {
       }
 
       socket.join(boardId);
-      io.to(boardId).emit('joinedBoard', boardId)
-  
-      
-    
+
     } catch (err) {
       console.log(err);
       socket.emit('error', 'An error occurred while joining the board');
@@ -164,6 +161,8 @@ io.on('connection', async (socket) => {
   handleCreateTask(socket);
 
   handleUpdateTask(socket);
+
+
 
 });
 
