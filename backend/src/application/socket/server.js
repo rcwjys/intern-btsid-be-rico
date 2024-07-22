@@ -4,9 +4,9 @@ import { app } from '../web.js';
 import { socketMiddleware } from '../../middleware/socket.js';
 import { prisma } from '../../utils/prismaClient.js';
 
-export const server = createServer(app);
+const server = createServer(app);
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: '*'
   },
@@ -148,11 +148,6 @@ function handleUpdateTask(socket) {
     }
   });
 }
-
-
-
-
-
 
 io.on('connection', async (socket) => {
 
