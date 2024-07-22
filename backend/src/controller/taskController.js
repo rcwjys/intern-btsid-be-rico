@@ -81,6 +81,7 @@ export async function updateTask(req, res) {
   res.status(200).json({
     success: true,
     data: {
+      oldListId: task.list_id,
       taskId: updatedTask.task_id,
       taskTitle: updatedTask.task_title
     }

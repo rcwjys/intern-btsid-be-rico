@@ -117,7 +117,7 @@ function handleCreateTask(socket) {
 
 function handleUpdateTask(socket) {
   socket.on('updateTask', async (data) => {
-    const { taskId } = data;
+    const { oldListId, taskId } = data;
 
     try {
       const updatedTask = await prisma.task.findUnique({
@@ -135,6 +135,7 @@ function handleUpdateTask(socket) {
       });
 
       const formattedResponse = {
+        oldListId,
         newListId: updatedTask.list_id,
         taskId: updatedTask.task_id,
         taskTitle: updatedTask.task_title
