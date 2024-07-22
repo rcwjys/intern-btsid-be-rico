@@ -99,6 +99,7 @@ taskRouter.post('/api/v1/tasks', tryCatch(createTask));
  *                   properties:
  *                     taskTitle:
  *                       type: string
+ *                       example: "my task"
  *       '400':
  *         description: Bad request due to validation error or resource not found
  *         content:

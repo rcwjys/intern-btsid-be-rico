@@ -4,9 +4,9 @@ import { app } from '../web.js';
 import { socketMiddleware } from '../../middleware/socket.js';
 import { prisma } from '../../utils/prismaClient.js';
 
-const server = createServer(app);
+export const server = createServer(app);
 
-export const io = new Server(server, {
+const io = new Server(server, {
   cors: {
     origin: '*'
   },
