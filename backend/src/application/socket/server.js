@@ -39,7 +39,7 @@ async function handleJoinBoardEvent(socket, userId) {
         return socket.emit('error', 'Not authorized to join this board');
       }
       
-      socket.join(boardId);
+    socket.join(boardId).emit('joinedBoard', boardId);
     
     } catch (err) {
       console.log(err);

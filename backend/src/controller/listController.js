@@ -15,7 +15,14 @@ export async function createList(req, res) {
     where: {
       list_title: listData.listTitle,
       author_id: req.userPayload.userId,
-      board_id: listData.boardId
+      board_id: listData.boardId,
+    },
+    include: {
+      boards: {
+        include: {
+          share: true
+        }
+      }
     }
   });
 
