@@ -127,15 +127,9 @@ function handleUpdateTask(socket) {
         include: {
           lists: {
             select: {
-              list_id: true
+              list_id: true,
+              board_id: true
             },
-            include: {
-              boards: {
-                select: {
-                  board_id: true
-                }
-              }
-            }
           }
         }
       });

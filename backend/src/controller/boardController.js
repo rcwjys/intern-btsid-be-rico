@@ -150,6 +150,8 @@ export async function shareBoard(req, res) {
     boardTitle: boardWIllShared.board_title
   }
 
+  
+
   res.status(200).json({
     success: true,
     data: formattedResponse
