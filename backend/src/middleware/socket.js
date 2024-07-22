@@ -15,5 +15,6 @@ export async function socketMiddleware(socket, next) {
     return next();
   } catch (err) {
     console.log(err);
+    socket.emit(err.message);
   }
 }

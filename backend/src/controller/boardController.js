@@ -107,6 +107,9 @@ export async function shareBoard(req, res) {
   const boardWIllShared = await prisma.board.findUnique({
     where: {
       board_id: boardId
+    },
+    include: {
+      author: true
     }
   });
 
@@ -141,7 +144,16 @@ export async function shareBoard(req, res) {
     }
   });
 
-  res.sendStatus(201);
+  const formattedResponse = {
+    authorId: boardWIllShared.author_id,
+    boardId: boardWIllShared.board_id,
+    boardTitle: boardWIllShared.board_title
+  }
+
+  res.status(200).json({
+    success: true,
+    data: formattedResponse
+  });
 }
 
 export async function getSharingBoard(req, res) {

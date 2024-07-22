@@ -115,6 +115,52 @@ function handleCreateTask(socket) {
   });
 }
 
+function handleUpdateTask(socket) {
+  socket.on('updateTask', async (data) => {
+    const { listId, taskId } = data;
+
+    try {
+      const updatedTask = await prisma.task.findUnique({
+        where: {
+          task_id: taskId
+        },
+        include: {
+          lists: {
+            select: {
+              list_id: true
+            },
+            include: {
+              boards: {
+                select: {
+                  board_id: true
+                }
+              }
+            }
+          }
+        }
+      });
+
+      const formattedResponse = {
+        newListId: updatedTask.list_id,
+        taskId: updatedTask.task_id,
+        taskTitle: updatedTask.task_title
+      }
+
+      io.to(updatedTask.lists.board_id).emit('updatedTask', formattedResponse);
+
+    } catch (err) {
+      console.log(err.message);
+      socket.emit('error', err.message);
+    }
+  });
+}
+
+function handleOnShareBoard(socket) {
+  // socket.emit('join-board', );
+}
+
+
+
 
 io.on('connection', async (socket) => {
 
@@ -126,7 +172,9 @@ io.on('connection', async (socket) => {
 
   handleCreateTask(socket);
 
+  handleUpdateTask(socket);
 
+  handleOnShareBoard(socket);
 
 });
 

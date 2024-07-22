@@ -205,13 +205,13 @@ boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
  * /api/v1/boards/{boardId}/shares:
  *   post:
  *     summary: Share a board with a collaborator
- *     description: Share a specific board identified by its slug with a collaborator by their email.
+ *     description: Share a specific board identified by its boardId with a collaborator by their email.
  *     tags: [Boards]
  *     parameters:
  *       - in: path
- *         name: BoardId
+ *         name: boardId
  *         required: true
- *         description: The boardId of the board to be shared
+ *         description: The ID of the board to be shared
  *         schema:
  *           type: string
  *     requestBody:
@@ -226,8 +226,28 @@ boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
  *                 minLength: 1
  *                 example: collaborator@example.com
  *     responses:
- *       '201':
+ *       '200':
  *         description: Board shared successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     authorId:
+ *                       type: string
+ *                       example: "a2b28a98-05f9-4caa-bef8-0bd45f7fe938"
+ *                     boardId:
+ *                       type: string
+ *                       example: "c7864ae9-1fdd-4926-8f38-b420530a3e43"
+ *                     boardTitle:
+ *                       type: string
+ *                       example: "gikah board"
  *       '400':
  *         description: Bad request due to validation error or resource not found
  *         content:
@@ -261,6 +281,7 @@ boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
  *                       type: string
  *                       example: "Internal server error"
  */
+
 
 boardRouter.post("/api/v1/boards/:boardId/shares", tryCatch(shareBoard));
 
