@@ -97,6 +97,9 @@ taskRouter.post('/api/v1/tasks', tryCatch(createTask));
  *                 data:
  *                   type: object
  *                   properties:
+ *                     taskId:
+ *                       type: string
+ *                       example: "04a370d0-44de-4d65-8312-439a4d553100"
  *                     taskTitle:
  *                       type: string
  *                       example: "my task"
