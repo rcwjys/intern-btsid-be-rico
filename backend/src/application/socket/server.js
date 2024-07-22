@@ -135,6 +135,7 @@ function handleUpdateTask(socket) {
       });
 
       const formattedResponse = {
+        oldListId: taskId,
         newListId: updatedTask.list_id,
         taskId: updatedTask.task_id,
         taskTitle: updatedTask.task_title
