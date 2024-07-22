@@ -38,8 +38,10 @@ async function handleJoinBoardEvent(socket, userId) {
       if (!isOwner && !isCollaborator) {
         return socket.emit('error', 'Not authorized to join this board');
       }
+      
 
       socket.join(boardId, () => {
+        console.log(`${socket.id} joined room ${boardId}`);
         socket.emit('joinedBoard', boardId);
       });
     

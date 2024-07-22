@@ -16,17 +16,10 @@ export async function createList(req, res) {
       list_title: listData.listTitle,
       author_id: req.userPayload.userId,
       board_id: listData.boardId,
-    },
-    include: {
-      boards: {
-        include: {
-          share: true
-        }
-      }
     }
   });
 
-  if (list) throw new ValidationError('list is already exists', 400);
+  if (listData.listTitle === list.list_title) throw new ValidationError('list is already exists', 400);
 
   const isBoardExist = await prisma.board.findUnique({
     where: {
