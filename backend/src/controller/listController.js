@@ -19,7 +19,7 @@ export async function createList(req, res) {
     }
   });
 
-  console.log(list.list_title);
+  console.log(list);
 
   // if (listData.listTitle === list.list_title) throw new ValidationError('list is already exists', 400);
 

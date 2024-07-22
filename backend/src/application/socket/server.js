@@ -39,10 +39,9 @@ async function handleJoinBoardEvent(socket, userId) {
         return socket.emit('error', 'Not authorized to join this board');
       }
 
-      socket.join(boardId, () => {
-        socket.emit('joinedBoard', boardId);
-        console.log(`Client joined room: ${boardId}`);
-      });
+      socket.join(boardId);
+      io.to(boardId).emit('joinedBoard', boardId)
+  
       
     
     } catch (err) {
