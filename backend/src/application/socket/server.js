@@ -18,8 +18,6 @@ const userSocket = new Map();
 
 async function handleJoinBoardEvent(socket, userId) {
   socket.on('join-board', async (boardData) => {
-    console.log(boardData)
-    console.log(boardData?.board?.collaborators)
     const { boardId } = boardData.board;
     try {
       const board = await prisma.board.findUnique({
@@ -47,13 +45,12 @@ async function handleJoinBoardEvent(socket, userId) {
       }      
 
       socket.join(boardId);
+      io.to(boardId).emit('joinedBoard', boardData);
 
       for (const [userId, socketId] of userSocket) {
-        if (board.share.forEach(share => {
-          if (share.collaborator_id === userId) {
-            io.to(socketId).emit('joinedBoard', boardData);
-          }
-        })) {
+        if (board.share.some(share => share.collaborator_id === userId)) {
+          io.to(socketId).emit('joinedBoard', boardData);
+        } else {
           continue;
         }
       }
