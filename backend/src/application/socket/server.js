@@ -51,7 +51,7 @@ async function handleJoinBoardEvent(socket, userId) {
           if (share.collaborator_id === userId) {
             io.to(socketId).emit('joinedBoard', boardData);
           }
-        })) {
+        })) { 
           continue;
         }
       }
@@ -62,33 +62,6 @@ async function handleJoinBoardEvent(socket, userId) {
     }
   });
 }
-
-// function handleCollaboratorJoinRoom(socket) {
-//   socket.on('joiningCollaborator', async (userId) => {
-
-//     console.log(userId);
-//     const sharedBoards = await prisma.sharing.findMany({
-//       where: { 
-//         collaborator_id: userId
-//       },
-//       select: { 
-//         board_id: true 
-//       }
-//     });
-
-//     console.log(sharedBoards);
-
-//     if (sharedBoards.length === 0) {
-//       socket.emit('info', 'user dont have shared board');
-//     }
-  
-//     sharedBoards.forEach(({ board_id }) => {
-//       socket.join(board_id);
-//       console.log(`${socket.userPayload.userId }${socket.id} joined to room ${board_id}}`);
-//     });
-//   });
-  
-// }
 
 function handleCreateTask(socket) {
   socket.on('createTask', async (data) => {
