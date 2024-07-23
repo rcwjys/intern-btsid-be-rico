@@ -248,6 +248,26 @@ boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
  *                     boardTitle:
  *                       type: string
  *                       example: "gikah board"
+ *                     author:
+ *                       type: object
+ *                       properties:
+ *                         authorId:
+ *                           type: string
+ *                           example: "a2b28a98-05f9-4caa-bef8-0bd45f7fe938"
+ *                         authorName:
+ *                           type: string
+ *                           example: "John Doe"
+ *                     collaborator:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           collaboratorId:
+ *                             type: string
+ *                             example: "d1c3e9a5-94f5-4e1d-88e4-9b4c9d62a1f3"
+ *                           collaboratorName:
+ *                             type: string
+ *                             example: "Jane Smith"
  *       '400':
  *         description: Bad request due to validation error or resource not found
  *         content:

@@ -15,7 +15,10 @@ const io = new Server(server, {
 io.use(socketMiddleware);
 
 async function handleJoinBoardEvent(socket, userId) {
-  socket.on('join-board', async (boardId) => {
+  socket.on('join-board', async (boardData) => {
+
+    const {boardId} = boardData;
+
     try {
       const board = await prisma.board.findUnique({
         where: { board_id: boardId }
@@ -39,7 +42,8 @@ async function handleJoinBoardEvent(socket, userId) {
       }
 
       socket.join(boardId);
-      io.to(boardId).emit('joinedBoard', boardId);
+      io.to(boardId).emit('joinedBoard', boardData);
+      
 
     } catch (err) {
       console.log(err);
@@ -47,8 +51,6 @@ async function handleJoinBoardEvent(socket, userId) {
     }
   });
 }
-
-
 
 
 async function handleCreateBoardEvent(socket) {

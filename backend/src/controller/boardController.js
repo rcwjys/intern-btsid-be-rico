@@ -109,7 +109,12 @@ export async function shareBoard(req, res) {
       board_id: boardId
     },
     include: {
-      author: true
+      author: true,
+      share: {
+        include: {
+          collaborator: true
+        }
+      }
     }
   });
 
@@ -144,10 +149,32 @@ export async function shareBoard(req, res) {
     }
   });
 
+  const updatedBoard = await prisma.board.findUnique({
+    where: {
+      board_id: boardWIllShared.board_id
+    },
+    include: {
+      author: true,
+      share: {
+        include: {
+          collaborator: true
+        }
+      }
+    }
+  });
+
   const formattedResponse = {
-    authorId: boardWIllShared.author_id,
-    boardId: boardWIllShared.board_id,
-    boardTitle: boardWIllShared.board_title
+    authorId: updatedBoard.author_id,
+    boardId: updatedBoard.board_id,
+    boardTitle: updatedBoard.board_title,
+    author: {
+      authorId: updatedBoard.author_id,
+      authorName: updatedBoard.author.user_name
+    },
+    collaborator: updatedBoard.share.map(share => ({
+      collaboratorId: share.collaborator_id,
+      collaboratorName: share.collaborator.user_name
+    }))
   }
 
   res.status(200).json({
