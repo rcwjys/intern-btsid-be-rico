@@ -183,8 +183,6 @@ export async function shareBoard(req, res) {
       board: formattedResponse
     }
   });
-
-  
 }
 
 export async function getSharingBoard(req, res) {
