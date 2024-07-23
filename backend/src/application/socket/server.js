@@ -18,6 +18,8 @@ const userSocket = new Map();
 
 async function handleJoinBoardEvent(socket, userId) {
   socket.on('join-board', async (boardData) => {
+    console.log(boardData)
+    console.log(boardData?.board?.collaborators)
     const { boardId } = boardData.board;
     try {
       const board = await prisma.board.findUnique({
@@ -51,7 +53,7 @@ async function handleJoinBoardEvent(socket, userId) {
           if (share.collaborator_id === userId) {
             io.to(socketId).emit('joinedBoard', boardData);
           }
-        })) { 
+        })) {
           continue;
         }
       }

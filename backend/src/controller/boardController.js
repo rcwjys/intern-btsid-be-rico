@@ -171,7 +171,7 @@ export async function shareBoard(req, res) {
       userId: updatedBoard.author_id,
       userName: updatedBoard.author.user_name
     },
-    collaborator: updatedBoard.share.map(share => ({
+    collaborators: updatedBoard.share.map(share => ({
       userId: share.collaborator_id,
       userName: share.collaborator.user_name
     }))
