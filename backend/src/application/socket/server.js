@@ -14,7 +14,6 @@ const io = new Server(server, {
 
 io.use(socketMiddleware);
 
-
 async function handleJoinBoardEvent(socket, userId) {
   socket.on('join-board', async (boardId) => {
     try {
@@ -40,6 +39,7 @@ async function handleJoinBoardEvent(socket, userId) {
       }
 
       socket.join(boardId);
+      io.to(boardId).emit('joinedBoard', boardId);
 
     } catch (err) {
       console.log(err);
@@ -47,6 +47,8 @@ async function handleJoinBoardEvent(socket, userId) {
     }
   });
 }
+
+
 
 
 async function handleCreateBoardEvent(socket) {
