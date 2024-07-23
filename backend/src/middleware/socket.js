@@ -18,6 +18,6 @@ export async function socketMiddleware(socket, next) {
   } catch (err) {
     console.log(err);
     socket.emit(err.message);
-    return next(err);
+
   }
 }

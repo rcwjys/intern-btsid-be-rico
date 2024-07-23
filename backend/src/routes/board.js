@@ -244,7 +244,7 @@ boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
  *                             userName:
  *                               type: string
  *                               example: "nanen 59554"
- *                         collaborator:
+ *                         collaborators:
  *                           type: array
  *                           items:
  *                             type: object

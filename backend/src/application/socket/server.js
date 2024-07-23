@@ -14,10 +14,10 @@ const io = new Server(server, {
 
 io.use(socketMiddleware);
 
-async function handleJoinBoardEvent(socket, userId) {
-  socket.on('join-board', async (boardData) => {
+const userSocket = new Map();
 
-    const {boardId} = boardData.board;
+async function handleJoinBoardEvent(socket, userId) {
+  socket.on('join-board', async (boardId) => {
 
     try {
       const board = await prisma.board.findUnique({
@@ -39,12 +39,11 @@ async function handleJoinBoardEvent(socket, userId) {
 
       if (!isOwner && !isCollaborator) {
         return socket.emit('error', 'Not authorized to join this board');
-      }
-      
+      }      
+
+    
       socket.join(boardId);
-      
-      socket.emit('joiningCollaborator', socket?.userPayload.userId);
-      
+
       io.to(boardId).emit('joinedBoard', boardData);
       
 
@@ -55,61 +54,32 @@ async function handleJoinBoardEvent(socket, userId) {
   });
 }
 
-async function handleCollaboratorJoinRoom(socket) {
-  socket.on('joiningCollaborator', async (userId) => {
+// function handleCollaboratorJoinRoom(socket) {
+//   socket.on('joiningCollaborator', async (userId) => {
 
-    const sharedBoards = await prisma.sharing.findMany({
-      where: { 
-        collaborator_id: userId
-      },
-      select: { 
-        board_id: true 
-      }
-    });
+//     console.log(userId);
+//     const sharedBoards = await prisma.sharing.findMany({
+//       where: { 
+//         collaborator_id: userId
+//       },
+//       select: { 
+//         board_id: true 
+//       }
+//     });
 
-    console.log(sharedBoards);
+//     console.log(sharedBoards);
 
-    if (sharedBoards.length === 0) {
-      socket.emit('info', 'user dont have shared board');
-    }
+//     if (sharedBoards.length === 0) {
+//       socket.emit('info', 'user dont have shared board');
+//     }
   
-    sharedBoards.forEach(({ board_id }) => {
-      socket.join(board_id);
-      console.log(`${socket.userPayload.userId }${socket.id} joined to room ${board_id}}`);
-    });
-  });
+//     sharedBoards.forEach(({ board_id }) => {
+//       socket.join(board_id);
+//       console.log(`${socket.userPayload.userId }${socket.id} joined to room ${board_id}}`);
+//     });
+//   });
   
-}
-
-
-async function handleCreateBoardEvent(socket) {
-
-  socket.on('createList', async (data) => {
-    const { listId } = data;
-
-    try {
-      const createdList = await prisma.list.findUnique({
-        where: {
-          list_id: listId
-        }
-      });
-
-      const formattedResponse = {
-        listId: createdList.list_id,
-        listTitle: createdList.list_title
-      }
-
-      const { board_id } = createdList;
-
-      io.to(board_id).emit('createdList', formattedResponse);
-
-    } catch (err) {
-      console.log(err);
-      socket.emit('error', 'An error occured');
-    }
-  });
-}
-
+// }
 
 function handleCreateTask(socket) {
   socket.on('createTask', async (data) => {
@@ -187,16 +157,16 @@ io.on('connection', async (socket) => {
 
   const userId = socket.userPayload.userId;
 
+  userSocket.set(userId, socket.id);
+
   handleJoinBoardEvent(socket, userId);
-
-  handleCollaboratorJoinRoom(socket);
-
-  handleCreateBoardEvent(socket);
-
+  
   handleCreateTask(socket);
-
+  
   handleUpdateTask(socket);
-
-
+  
+  socket.on('disconnect', () => {
+    userSocket.delete(userId);
+  })
 });
 
