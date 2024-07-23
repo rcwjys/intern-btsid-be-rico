@@ -17,7 +17,7 @@ io.use(socketMiddleware);
 async function handleJoinBoardEvent(socket, userId) {
   socket.on('join-board', async (boardData) => {
 
-    const {boardId} = boardData;
+    const {boardId} = boardData.board;
 
     try {
       const board = await prisma.board.findUnique({
