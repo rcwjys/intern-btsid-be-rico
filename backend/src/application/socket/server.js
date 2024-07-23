@@ -40,8 +40,10 @@ async function handleJoinBoardEvent(socket, userId) {
       if (!isOwner && !isCollaborator) {
         return socket.emit('error', 'Not authorized to join this board');
       }
-
+      
       socket.join(boardId);
+      
+      socket.emit('joiningCollaborator', socket?.userPayload.userId);
       
       io.to(boardId).emit('joinedBoard', boardData);
       
@@ -51,6 +53,32 @@ async function handleJoinBoardEvent(socket, userId) {
       socket.emit('error', 'An error occurred while joining the board');
     }
   });
+}
+
+async function handleCollaboratorJoinRoom(socket) {
+  socket.on('joiningCollaborator', async (userId) => {
+
+    const sharedBoards = await prisma.sharing.findMany({
+      where: { 
+        collaborator_id: userId
+      },
+      select: { 
+        board_id: true 
+      }
+    });
+
+    console.log(sharedBoards);
+
+    if (sharedBoards.length === 0) {
+      socket.emit('info', 'user dont have shared board');
+    }
+  
+    sharedBoards.forEach(({ board_id }) => {
+      socket.join(board_id);
+      console.log(`${socket.userPayload.userId }${socket.id} joined to room ${board_id}}`);
+    });
+  });
+  
 }
 
 
@@ -161,12 +189,13 @@ io.on('connection', async (socket) => {
 
   handleJoinBoardEvent(socket, userId);
 
+  handleCollaboratorJoinRoom(socket);
+
   handleCreateBoardEvent(socket);
 
   handleCreateTask(socket);
 
   handleUpdateTask(socket);
-
 
 
 });
