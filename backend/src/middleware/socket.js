@@ -21,12 +21,12 @@ export async function socketMiddleware(socket, next) {
 
     sharedBoards.forEach(({ board_id }) => {
       socket.join(board_id);
-      console.log(`${socket.id} joined ${board_id}`)
     });
 
     return next();
   } catch (err) {
     console.log(err);
     socket.emit(err.message);
+    return next(err);
   }
 }

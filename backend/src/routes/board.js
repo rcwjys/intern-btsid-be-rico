@@ -112,14 +112,14 @@ boardRouter.post("/api/v1/boards", tryCatch(createBoard));
 
 /**
  * @swagger
- * /api/v1/boards/shares: 
+ * /api/v1/boards/shares:
  *   get:
- *     summary: Get sharing boards
- *     description: Retrieve boards shared with or created by the current user, including board details, author information, and collaborators.
+ *     summary: Share a board with a collaborator
+ *     description: Share a specific board identified by its boardId with a collaborator by their email.
  *     tags: [Boards]
  *     responses:
  *       '200':
- *         description: Sharing boards retrieved successfully
+ *         description: Board shared successfully
  *         content:
  *           application/json:
  *             schema:
@@ -136,51 +136,35 @@ boardRouter.post("/api/v1/boards", tryCatch(createBoard));
  *                       board:
  *                         type: object
  *                         properties:
- *                           board_id:
+ *                           boardId:
  *                             type: string
- *                             example: "7eac5459-cf19-41c3-a620-5dd134c285f2"
- *                           board_title:
+ *                             example: "7befc236-d596-447e-a456-e47e4dbf3114"
+ *                           boardTitle:
  *                             type: string
- *                             example: "my first board"
- *                           board_slug:
+ *                             example: "board nanen"
+ *                           boardSlug:
  *                             type: string
- *                             example: "my-first-board"
+ *                             example: "board-nanen"
  *                           author:
  *                             type: object
  *                             properties:
- *                               user_id:
+ *                               userId:
  *                                 type: string
- *                                 example: "da8edf79-2343-4c94-817d-62916cb5f757"
- *                               user_name:
+ *                                 example: "06fa55c0-ace0-41d7-91cf-7b2aeece34ef"
+ *                               userName:
  *                                 type: string
- *                                 example: "user"
+ *                                 example: "nanen 59554"
  *                       collaborators:
  *                         type: array
  *                         items:
  *                           type: object
  *                           properties:
- *                             user_id:
+ *                             userId:
  *                               type: string
- *                               example: "b0da6cf3-3497-489f-a2d2-05d0a3d965d6"
- *                             user_name:
+ *                               example: "a2b28a98-05f9-4caa-bef8-0bd45f7fe938"
+ *                             userName:
  *                               type: string
- *                               example: "rico"
- *       '400':
- *         description: Bad request due to validation error or resource not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: object
- *                   properties:
- *                     message:
- *                       type: string
- *                       example: "Validation error: Invalid request parameters"
+ *                               example: "gikah4010"
  *       '500':
  *         description: Internal server error
  *         content:
@@ -239,35 +223,38 @@ boardRouter.get("/api/v1/boards/shares", tryCatch(getSharingBoard));
  *                 data:
  *                   type: object
  *                   properties:
- *                     authorId:
- *                       type: string
- *                       example: "a2b28a98-05f9-4caa-bef8-0bd45f7fe938"
- *                     boardId:
- *                       type: string
- *                       example: "c7864ae9-1fdd-4926-8f38-b420530a3e43"
- *                     boardTitle:
- *                       type: string
- *                       example: "gikah board"
- *                     author:
+ *                     board:
  *                       type: object
  *                       properties:
- *                         authorId:
+ *                         boardId:
  *                           type: string
- *                           example: "a2b28a98-05f9-4caa-bef8-0bd45f7fe938"
- *                         authorName:
+ *                           example: "7befc236-d596-447e-a456-e47e4dbf3114"
+ *                         boardTitle:
  *                           type: string
- *                           example: "John Doe"
- *                     collaborator:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           collaboratorId:
- *                             type: string
- *                             example: "d1c3e9a5-94f5-4e1d-88e4-9b4c9d62a1f3"
- *                           collaboratorName:
- *                             type: string
- *                             example: "Jane Smith"
+ *                           example: "board nanen"
+ *                         boardSlug:
+ *                           type: string
+ *                           example: "board-nanen"
+ *                         author:
+ *                           type: object
+ *                           properties:
+ *                             userId:
+ *                               type: string
+ *                               example: "06fa55c0-ace0-41d7-91cf-7b2aeece34ef"
+ *                             userName:
+ *                               type: string
+ *                               example: "nanen 59554"
+ *                         collaborator:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               userId:
+ *                                 type: string
+ *                                 example: "a2b28a98-05f9-4caa-bef8-0bd45f7fe938"
+ *                               userName:
+ *                                 type: string
+ *                                 example: "gikah4010"
  *       '400':
  *         description: Bad request due to validation error or resource not found
  *         content:
