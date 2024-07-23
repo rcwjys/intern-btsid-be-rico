@@ -17,11 +17,14 @@ io.use(socketMiddleware);
 const userSocket = new Map();
 
 async function handleJoinBoardEvent(socket, userId) {
-  socket.on('join-board', async (boardId) => {
-
+  socket.on('join-board', async (boardData) => {
+    const { boardId } = boardData.board;
     try {
       const board = await prisma.board.findUnique({
-        where: { board_id: boardId }
+        where: { board_id: boardId },
+        include: {
+          share: true
+        }
       });
 
       if (!(board && board.is_sharing)) {
@@ -41,11 +44,17 @@ async function handleJoinBoardEvent(socket, userId) {
         return socket.emit('error', 'Not authorized to join this board');
       }      
 
-    
       socket.join(boardId);
 
-      io.to(boardId).emit('joinedBoard', boardData);
-      
+      for (const [userId, socketId] of userSocket) {
+        if (board.share.forEach(share => {
+          if (share.collaborator_id === userId) {
+            io.to(socketId).emit('joinedBoard', boardData);
+          }
+        })) {
+          continue;
+        }
+      }
 
     } catch (err) {
       console.log(err);
