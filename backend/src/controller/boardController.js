@@ -169,7 +169,7 @@ export async function shareBoard(req, res) {
     boardSlug: updatedBoard.board_slug,
     author: {
       userId: updatedBoard.author_id,
-      userNName: updatedBoard.author.user_name
+      userName: updatedBoard.author.user_name
     },
     collaborator: updatedBoard.share.map(share => ({
       userId: share.collaborator_id,
