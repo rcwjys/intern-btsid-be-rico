@@ -17,6 +17,7 @@ io.use(socketMiddleware);
 async function handleJoinBoardEvent(socket, userId) {
   socket.on('join-board', async (boardData) => {
 
+    console.log(boardData);
     const {boardId} = boardData;
 
     try {

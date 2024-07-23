@@ -164,22 +164,24 @@ export async function shareBoard(req, res) {
   });
 
   const formattedResponse = {
-    authorId: updatedBoard.author_id,
     boardId: updatedBoard.board_id,
     boardTitle: updatedBoard.board_title,
+    boardSlug: updatedBoard.board_slug,
     author: {
-      authorId: updatedBoard.author_id,
-      authorName: updatedBoard.author.user_name
+      userId: updatedBoard.author_id,
+      userNName: updatedBoard.author.user_name
     },
     collaborator: updatedBoard.share.map(share => ({
-      collaboratorId: share.collaborator_id,
-      collaboratorName: share.collaborator.user_name
+      userId: share.collaborator_id,
+      userName: share.collaborator.user_name
     }))
   }
 
   res.status(200).json({
     success: true,
-    data: formattedResponse
+    data: {
+      board: formattedResponse
+    }
   });
 
   
