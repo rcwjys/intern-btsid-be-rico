@@ -65,6 +65,9 @@ async function handleCreateList(socket) {
         where: {
           list_id: listId,
         },
+        include: {
+          boards
+        }
       });
 
       const formattedResponse = {
@@ -72,7 +75,7 @@ async function handleCreateList(socket) {
         listTitle: createdList.list_title,
       };
 
-      io.to(boardId).emit("createdList", formattedResponse);
+      io.to(createdList.board_id).emit("createdList", formattedResponse);
 
     } catch (err) {
       console.log(err);
