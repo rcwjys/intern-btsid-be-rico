@@ -16,7 +16,7 @@ io.use(socketMiddleware);
 
 const userSocket = new Map();
 
-async function handleNotifyCollaborator(socket) {
+async function handleNotifyCollaborator(socket, userId) {
   socket.on('notifyCollaborator', async(boardData) => {
     try {
       const { boardId } = boardData.board;
@@ -39,9 +39,9 @@ async function handleNotifyCollaborator(socket) {
         return socket.emit('error', 'Board is not shared');
       }
 
-      if (!isCollaborator) {
-        return socket.emit('error', 'Not authorized to join this board');
-      }
+      // if (!isCollaborator) {
+      //   return socket.emit('error', 'Not authorized to join this board');
+      // }
 
       for (const [userId, socketId] of userSocket) {
         if (board.share.some(share => share.collaborator_id === userId)) {
@@ -58,7 +58,7 @@ async function handleNotifyCollaborator(socket) {
   });
 }
 
-async function handleJoinBoardEvent(socket) {
+async function handleJoinBoardEvent(socket, userId) {
   socket.on('join-board', async (boardId) => {
     try {
       const board = await prisma.board.findUnique({
@@ -86,7 +86,8 @@ async function handleJoinBoardEvent(socket) {
       }      
 
       socket.join(boardId);
-      io.to(boardId).emit('joinedBoard', boardData);
+      
+      io.to(boardId).emit('joinedBoard', boardId);
 
       // for (const [userId, socketId] of userSocket) {
       //   if (board.share.some(share => share.collaborator_id === userId)) {
@@ -183,7 +184,7 @@ io.on('connection', async (socket) => {
 
   handleNotifyCollaborator(socket, userId);
 
-  handleJoinBoardEvent(socket);
+  handleJoinBoardEvent(socket, userId);
   
   handleCreateTask(socket);
   
