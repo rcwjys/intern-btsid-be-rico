@@ -58,21 +58,23 @@ async function handleNotifyCollaborator(socket, userId) {
 async function handleCreateList(socket) {
 
   socket.on("createList", async (data) => {
-    const { listId } = data;
-
+    
     try {
+      const { listId } = data;
       const createdList = await prisma.list.findUnique({
         where: {
           list_id: listId,
         },
         include: {
-          boards: true
+          boards: true,
+          tasks: true
         }
       });
 
       const formattedResponse = {
         listId: createdList.list_id,
         listTitle: createdList.list_title,
+        tasks: createdList.tasks
       };
 
       io.to(createdList.board_id).emit("createdList", formattedResponse);
