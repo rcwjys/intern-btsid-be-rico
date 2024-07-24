@@ -16,10 +16,51 @@ io.use(socketMiddleware);
 
 const userSocket = new Map();
 
-async function handleJoinBoardEvent(socket, userId) {
-  socket.on('join-board', async (boardData) => {
+async function handleNotifyCollaborator(socket) {
+  socket.on('notifyCollaborator', async(boardData) => {
     try {
       const { boardId } = boardData.board;
+
+      const board = await prisma.board.findUnique({
+        where: { board_id: boardId },
+        include: {
+          share: true
+        }
+      });
+
+      const isCollaborator = await prisma.sharing.findFirst({
+        where: {
+          board_id: boardId,
+          collaborator_id: userId
+        }
+      });
+
+      if (!board.is_sharing) {
+        return socket.emit('error', 'Board is not shared');
+      }
+
+      if (!isCollaborator) {
+        return socket.emit('error', 'Not authorized to join this board');
+      }
+
+      for (const [userId, socketId] of userSocket) {
+        if (board.share.some(share => share.collaborator_id === userId)) {
+          io.to(socketId).emit('notifiedCollaborator', boardData);
+        } else {
+          continue;
+        }
+      }
+
+    } catch (err) {
+      console.log(err.message);
+      return socket.on('error', 'failed notify the collaborator');
+    }
+  });
+}
+
+async function handleJoinBoardEvent(socket, userId) {
+  socket.on('join-board', async (boardId) => {
+    try {
       const board = await prisma.board.findUnique({
         where: { board_id: boardId },
         include: {
@@ -47,18 +88,17 @@ async function handleJoinBoardEvent(socket, userId) {
       socket.join(boardId);
       io.to(boardId).emit('joinedBoard', boardData);
 
-      for (const [userId, socketId] of userSocket) {
-        if (board.share.some(share => share.collaborator_id === userId)) {
-          io.to(socketId).emit('joinedBoard', boardData);
-        } else {
-          continue;
-        }
-      }
+      // for (const [userId, socketId] of userSocket) {
+      //   if (board.share.some(share => share.collaborator_id === userId)) {
+      //     io.to(socketId).emit('joinedBoard', boardData);
+      //   } else {
+      //     continue;
+      //   }
+      // }
 
     } catch (err) {
       console.log(err);
-      socket.emit('error', 'An error occurred while joining the board');
-
+      return socket.emit('error', 'An error occurred while joining the board');
     }
   });
 }
@@ -140,6 +180,8 @@ io.on('connection', async (socket) => {
   const userId = socket.userPayload.userId;
 
   userSocket.set(userId, socket.id);
+
+  handleNotifyCollaborator(socket);
 
   handleJoinBoardEvent(socket, userId);
   
