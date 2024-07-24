@@ -66,7 +66,7 @@ async function handleCreateList(socket) {
           list_id: listId,
         },
         include: {
-          boards
+          boards: true
         }
       });
 

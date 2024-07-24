@@ -54,8 +54,7 @@ export async function createList(req, res) {
     data: {
       listId: createdList.list_id,
       listTitle: createdList.list_title,
-      task: createdList.tasks,
-      createdAt: createdList.createdAt
+      tasks: createdList.tasks,
     }
   });
 }
