@@ -17,11 +17,11 @@ io.use(socketMiddleware);
 const userSocket = new Map();
 
 async function handleJoinBoardEvent(socket, userId) {
-  socket.on('join-board', async (boardData) => {
+  socket.on('join-board', async (boardData, AddboardId) => {
     const { boardId } = boardData.board;
     try {
       const board = await prisma.board.findUnique({
-        where: { board_id: boardId },
+        where: { board_id: AddboardId },
         include: {
           share: true
         }
@@ -35,7 +35,7 @@ async function handleJoinBoardEvent(socket, userId) {
 
       const isCollaborator = await prisma.sharing.findFirst({
         where: {
-          board_id: boardId,
+          board_id: AddboardId,
           collaborator_id: userId
         }
       });
@@ -58,6 +58,7 @@ async function handleJoinBoardEvent(socket, userId) {
     } catch (err) {
       console.log(err);
       socket.emit('error', 'An error occurred while joining the board');
+
     }
   });
 }
