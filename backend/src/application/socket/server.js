@@ -39,9 +39,6 @@ async function handleNotifyCollaborator(socket, userId) {
         return socket.emit('error', 'Board is not shared');
       }
 
-      // if (!isCollaborator) {
-      //   return socket.emit('error', 'Not authorized to join this board');
-      // }
 
       for (const [userId, socketId] of userSocket) {
         if (board.share.some(share => share.collaborator_id === userId)) {
@@ -54,6 +51,32 @@ async function handleNotifyCollaborator(socket, userId) {
     } catch (err) {
       console.log(err.message);
       return socket.emit('error', 'failed notify the collaborator');
+    }
+  });
+}
+
+async function handleCreateList(socket) {
+
+  socket.on("createList", async (data) => {
+    const { listId } = data;
+
+    try {
+      const createdList = await prisma.list.findUnique({
+        where: {
+          list_id: listId,
+        },
+      });
+
+      const formattedResponse = {
+        listId: createdList.list_id,
+        listTitle: createdList.list_title,
+      };
+
+      io.to(boardId).emit("createdList", formattedResponse);
+
+    } catch (err) {
+      console.log(err);
+      socket.emit("error", "An error occured");
     }
   });
 }
@@ -86,16 +109,11 @@ async function handleJoinBoardEvent(socket, userId) {
       }      
 
       socket.join(boardId);
-      
-      io.to(boardId).emit('joinedBoard', boardId);
 
-      // for (const [userId, socketId] of userSocket) {
-      //   if (board.share.some(share => share.collaborator_id === userId)) {
-      //     io.to(socketId).emit('joinedBoard', boardData);
-      //   } else {
-      //     continue;
-      //   }
-      // }
+      console.log(`${socket.id} joined ${boardId}`);
+      
+      // io.to(boardId).emit('joinedBoard', boardId);
+
 
     } catch (err) {
       console.log(err);
@@ -185,7 +203,9 @@ io.on('connection', async (socket) => {
   handleNotifyCollaborator(socket, userId);
 
   handleJoinBoardEvent(socket, userId);
-  
+
+  handleCreateList(socket) 
+
   handleCreateTask(socket);
   
   handleUpdateTask(socket);
