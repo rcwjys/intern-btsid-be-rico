@@ -53,12 +53,12 @@ async function handleNotifyCollaborator(socket) {
 
     } catch (err) {
       console.log(err.message);
-      return socket.on('error', 'failed notify the collaborator');
+      return socket.emit('error', 'failed notify the collaborator');
     }
   });
 }
 
-async function handleJoinBoardEvent(socket, userId) {
+async function handleJoinBoardEvent(socket) {
   socket.on('join-board', async (boardId) => {
     try {
       const board = await prisma.board.findUnique({
@@ -181,9 +181,9 @@ io.on('connection', async (socket) => {
 
   userSocket.set(userId, socket.id);
 
-  handleNotifyCollaborator(socket);
+  handleNotifyCollaborator(socket, userId);
 
-  handleJoinBoardEvent(socket, userId);
+  handleJoinBoardEvent(socket);
   
   handleCreateTask(socket);
   
